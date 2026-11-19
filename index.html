@@ -91,11 +91,7 @@ input.name{width:100%;border:4px solid var(--k);background:#fff;font:600 22px 'P
 .pbtn .pp{font-size:16px;color:var(--mut);margin-top:6px}
 /* map */
 .land{margin-bottom:8px}
-.landname{display:inline-flex;align-items:center;gap:10px;background:var(--k);color:#fff;padding:6px 12px 6px 6px;margin:6px 0 0;border:4px solid var(--k);box-shadow:4px 4px 0 rgba(27,21,48,.35);max-width:100%}
-.landname .emb{width:40px;height:40px;flex:none;display:grid;place-items:center;background:rgba(255,255,255,.22);border:3px solid rgba(27,21,48,.5)}
-.landname b{display:block;font-family:'Press Start 2P',monospace;font-weight:400;font-size:10px;line-height:1.5;color:#fff;text-shadow:2px 2px 0 rgba(27,21,48,.6)}
-.landname small{display:block;font-size:14px;color:rgba(255,255,255,.85);margin-top:2px}
-img.ic{margin:-4px 2px 0;vertical-align:middle}
+.landname{font-family:'Press Start 2P',monospace;font-size:10px;background:var(--k);color:var(--gold);display:inline-block;padding:8px 10px;margin:6px 0 0}
 .path{position:relative;margin-top:30px}
 .path svg{position:absolute;left:0;top:0;width:100%;pointer-events:none}
 .nrow{height:92px;position:relative}
@@ -170,12 +166,6 @@ a{color:var(--pri2)}
 .lamb.flip img{transform:scaleX(-1)}
 @keyframes graze{50%{transform:translateY(-3px)}}
 .shep{position:absolute;left:50%;bottom:30px;transform:translateX(-50%)}
-.hills{position:relative;height:60px;margin:-4px 0 -4px;border:4px solid var(--k);border-bottom:0;background:#8fb98a;box-shadow:inset 0 -14px 0 #6f9a6a;overflow:hidden}
-.stray{position:absolute;opacity:.85;animation:graze 3s steps(2) infinite}
-.stray.flip img{transform:scaleX(-1)}
-.found{font-family:'Press Start 2P',monospace;font-size:10px;background:#fff;border:4px solid var(--k);padding:6px 8px;display:flex;align-items:center;gap:6px}
-.nav button{position:relative}
-.badge{position:absolute;top:-8px;right:6px;min-width:22px;height:22px;padding:0 4px;background:var(--bad);color:#fff;border:3px solid var(--k);font-size:9px;line-height:16px;text-align:center;animation:pulse 1s steps(2) infinite}
 /* shop */
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .item{border:4px solid var(--k);background:#fff;padding:10px 4px;text-align:center;cursor:pointer;color:var(--k);font:inherit;box-shadow:3px 3px 0 var(--k)}
@@ -217,76 +207,7 @@ a{color:var(--pri2)}
 'use strict';
 // ================= DATA =================
 const PAL={"k":"#1b1530","w":"#ffffff","s":"#ffcf9e","S":"#e8a87c","e":"#1b1530","p":"#ff7aa8","a":"#d7dde8","b":"#8e9ab0","r":"#ff3b5c","c":"#3d7bff","C":"#2a55c2","y":"#ffd23f","Y":"#e0a800","n":"#7a4a2a","g":"#47d16a","G":"#2a9a48","o":"#ff9a3c","O":"#d9661a","m":"#c86bff","M":"#9a3fd6","h":"#f2c14e","H":"#c98a1b","f":"#ff5e3a","t":"#ffe9a8","v":"#ffffff"};
-const SPR={"knight":["......rr........",".....rrrr.......","....kkkkkk......","...kaaaaaak.....","...kabbbbak..w..","...kkkkkkkk..w..","...kaaaaaak..w..","....kaaaak...w..","..kkccyycckkyyy.",".kaakcyyckaak.k.",".kaakccccckak...",".kkk.kccck.kk...","....kbbkbbk.....","....kak.kak.....","....knk.knk.....","....kkk.kkk....."],"princess":["....y.y.y.......","....yyyyy.......","...khhhhhk......","..khhsssshk.....","..khsesseshk....","..khsssssh......","..khhspsshk.....","..kh.kssk.hk....","....kmmmmk......","...kmmyymmk.....","..ksmmmmmmsk....","...kmmmmmmk.....","..kmmmmmmmmk....","..kMmmmmmmMk....",".kMMMMMMMMMMk...","..kkkkkkkkkk...."],"dragon":["...Y......Y.....","...Yk....kY.....","...kgkkkkgk.....","..kgggggggggk...","..kgvkgggvkgk...","..kgggggggggk...","..kggGGGGGggk...","...kgGkGkGgk....","MM.kkggggkk.MM..","MMMkgttttgkMMM..",".MkggttttggkM...","..kggttttggk..f.","..kggttttggkkof.","...kggggggkgkk..","...kgk..kgk.....","...kkk..kkk....."],"lion":["...kkkkkkkk.....","..koooooooook...",".koOooooooOook..",".koohhhhhhhook..","koohhehhhehhook.","koohhhhhhhhhook.","koohhhkkkhhhook.",".koohhppphhook..",".kooohhhhhoook..","..koooooooook.k.","...khhhhhhk..kok","..khhhtthhhk.ko.","..khhttttthhkk..","...khhhhhhhk....","...khk...khk....","...kkk...kkk...."],"sheep":["..kkkkkk....",".kwwwwwwkk..","kwwwwwwwwwk.","kwwwwwwwkkkk","kwwwwwwwkvkk","kwwwwwwwkkk.",".kwwwwwwwk..","..kkkkkkk...","..kk..kk....","..kk..kk...."],"coin":["..kkkk..",".kyyyYk.","kyytyyYk","kyytyyYk","kyytyyYk","kyyyyyYk",".kYYYYk.","..kkkk.."],"sword":[".......kk","......kwk",".....kwk.","....kwk..",".k.kwk...",".kykk....","..kyk....",".knkyk...","knk..k..."],"heart":[".kk.kk.","krrkrrk","krrrrrk","krrrrrk",".krrrk.","..krk..","...k..."],"castle":["k.k.k....k.k.k","kakak....kakak","kaaak.kk.kaaak","kaaakkrrkkaaak","kaaaakrrkaaaak","kaaaaakkaaaaak","kabaaaaaaaabak","kaaaaakkaaaaak","kaaaakbbkaaaak","kaaaakbbkaaaak","kkkkkkkkkkkkkk"],"flag":["kyyy..","kyyyy.","kyyy..","k.....","k.....","k....."]};
-// 8-bit UI icons and land emblems (same palette letters as the sprites above).
-Object.assign(SPR,{
- gear:[".....kkk.....",".kk..kak..kk.",".kakkkakkkak.","..kaaaaaaak..","..kaabbbaak..","kkkab...bakkk","kaaab...baaak","kkkab...bakkk","..kaabbbaak..","..kaaaaaaak..",".kakkkakkkak.",".kk..kak..kk.",".....kkk....."],
- note:["...kkkkkkk","...kkkkkkk","...k.....k","...k.....k","...k.....k","...k.....k","...k.....k",".kkk...kkk","kmmk..kmmk","kmmk..kmmk",".kk....kk."],
- lock:["..kkkk..",".kk..kk.",".k....k.","kkkkkkkk","kyyyyyyk","kyykkyyk","kyykkyyk","kyyyyyyk","kkkkkkkk"],
- speaker:["....k....","...kk..k.","kkkwk.k.k","kwwwk.k.k","kwwwk.k.k","kkkwk.k.k","...kk..k.","....k...."],
- book:["kkkkkkk.","knnnnnkk","knnynnkw","knyyynkw","knnynnkw","knnynnkw","knnnnnkk","kkkkkkk."],
- eye:["..kkkkk..",".kwwcwwk.","kwwcCcwwk",".kwwcwwk.","..kkkkk.."],
- shut:["k.......k",".kk...kk.","...kkk...","..k.k.k.."],
- back:["...k...","..kk...",".kkkkkk","kkkkkkk",".kkkkkk","..kk...","...k..."],
- play:["k....","kk...","kkk..","kkkk.","kkk..","kk...","k...."],
- stop:["kkkkk","kkkkk","kkkkk","kkkkk","kkkkk"],
- star:["....k....","...kyk...","kkkyyykkk","kyyyyyyyk",".kyyyyyk.","..kyyyk..",".kyykyyk.",".kyk.kyk.",".kk...kk."],
- crook:["..kkk.",".k...k","k....k","k....k",".....k",".....k",".....k",".....k",".....k",".....k"],
- tree:["..gggg..",".gGggrg.","gggGgggg","grgggGgg",".ggggrg.","...nn...","...nn...","..nnnn.."],
- ark:["........","...nnn..","...nwn..","nnnnnnnn",".nHHHHn.","..nnnn..","cccccccc","CcCcCcCc"],
- rainbow:["..rrrr..",".roooor.","royyyyor","oyggggyo","ygc..cgy","gc....cg"],
- nstar:["...y...","..yyy..","yyyyyyy",".yyyyy.","..yyy..",".yy.yy.","y.....y"],
- ladder:["n....n","nnnnnn","n....n","nnnnnn","n....n","nnnnnn","n....n"],
- pyramid:["...hh...","..hhHh..",".hhhhHh.","hhhhhhHh"],
- fire:["...f...","..ff.f.",".fofff.",".foyof.","foyyyof","foyyyof",".fyyyf.",".GgGgG."],
- wave:["..ccc...",".cwwCc..","cw...cc.","ccc..cCc","CCcccCCc","cCCCCCCC"],
- bread:["..tttt..",".thhhht.","thhhhhht","tHHHHHHt",".tttttt."],
- tablets:[".aa...aa.","aaaa.aaaa","abba.abba","aaaa.aaaa","abba.abba","aaaa.aaaa","abba.abba","aaaa.aaaa"],
- crown:["y..y..y","yy.y.yy","yyyyyyy","yrycyry","yyyyyyy","YYYYYYY"],
- dove:["ww......","www..ww.",".wwwwwkY","..wwwww.","...ww..."],
- palm:["gg..gg",".gggg.","g.nn.g","..nn..","..nn..","..nn.."],
- cup:["yyyyyy","yyyyyy",".yyyy.","..yy..","..yy..",".yyyy."],
- cross:["..nn..","..nn..","nnnnnn","nnnnnn","..nn..","..nn..","..nn..",".GggG."],
- tomb:["..bbbb..",".baaaab.","baa..aab","ba....ab","ba....ab","bbbbbbbb"],
- ship:["...w....","...ww...","...www..","...wwww.","...n....","nnnnnnnn",".nnnnnn.","cccccccc"],
- scroll:["nttttttn",".tkkkkt.",".tttttt.",".tkkkkt.",".tttttt.","nttttttn"]
-});
-// Small inline icon; pass {k:'#fff'} as the map on colored buttons.
-const ic=(n,s,m)=>spr(n,s||2,m,'ic');
-const W={k:'#ffffff'},LOSTG={w:'#e8e4f0',k:'#9a93b0',v:'#c9c3d6'},LOCKG={k:'#7d7698',y:'#ddd8e8'},STARG={y:'#d8d1e6',k:'#9a93b0'};
-const starRow=p=>[0,1,2].map(n=>spr('star',2,n<p?{y:'#ffffff'}:{y:'#e0a800',k:'#c98a1b'})).join('');
-// The journey: every quest walks the story of Scripture, from the garden to the new creation.
-// A quest with more or fewer lands than this spreads them evenly across the story.
-const STORY=[
- {n:'Garden of Eden',r:'Genesis 2',e:'tree',c:'#2a9a48'},
- {n:'East of Eden',r:'Genesis 3',e:'sword',c:'#6b3fa0'},
- {n:"Noah's Ark",r:'Genesis 6',e:'ark',c:'#7a4a2a'},
- {n:'Rainbow Promise',r:'Genesis 9',e:'rainbow',c:'#3d7bff'},
- {n:"Abraham's Stars",r:'Genesis 15',e:'nstar',c:'#2b2350'},
- {n:"Jacob's Ladder",r:'Genesis 28',e:'ladder',c:'#5a2fd6'},
- {n:"Joseph's Egypt",r:'Genesis 41',e:'pyramid',c:'#c98a1b'},
- {n:'Burning Bush',r:'Exodus 3',e:'fire',c:'#d9661a'},
- {n:'Red Sea Road',r:'Exodus 14',e:'wave',c:'#2a55c2'},
- {n:'Manna Desert',r:'Exodus 16',e:'bread',c:'#b8862b'},
- {n:'Mount Sinai',r:'Exodus 20',e:'tablets',c:'#6a6385'},
- {n:'Walls of Jericho',r:'Joshua 6',e:'castle',c:'#a0522d'},
- {n:"David's Pasture",r:'1 Samuel 16',e:'sheep',c:'#2a9a48'},
- {n:"Solomon's Temple",r:'1 Kings 8',e:'crown',c:'#c98a1b'},
- {n:"Lions' Den",r:'Daniel 6',e:'lion',c:'#9a3fd6'},
- {n:'Star of Bethlehem',r:'Luke 2',e:'nstar',c:'#1b1530'},
- {n:'Jordan River',r:'Matthew 3',e:'dove',c:'#2a8fd6'},
- {n:'Sea of Galilee',r:'Mark 4',e:'wave',c:'#2a55c2'},
- {n:'Feeding Hillside',r:'John 6',e:'bread',c:'#2a9a48'},
- {n:'Road of Palms',r:'Matthew 21',e:'palm',c:'#3a8a3a'},
- {n:'Upper Room',r:'Luke 22',e:'cup',c:'#7a2a4a'},
- {n:'Calvary Hill',r:'John 19',e:'cross',c:'#5a2a2a'},
- {n:'Empty Tomb',r:'Luke 24',e:'tomb',c:'#d9a520'},
- {n:'Pentecost Fire',r:'Acts 2',e:'fire',c:'#c43c22'},
- {n:"Apostles' Voyage",r:'Acts 27',e:'ship',c:'#2a55c2'},
- {n:'Isle of Patmos',r:'Revelation 1',e:'scroll',c:'#4b4f70'},
- {n:'New Heaven & Earth',r:'Revelation 21',e:'castle',c:'#e0a800',m:{a:'#ffe27a',b:'#ffffff',r:'#5cc8ff'}}
-];
-const storyFor=(s,total)=>STORY[total<=1?STORY.length-1:Math.round(s*(STORY.length-1)/(total-1))];
+const SPR={"gear":["....kkkk....",".kk.kaak.kk.",".kakkaakkak.","..kaaaaaak..","kkkaakkaakkk","kaaak..kaaak","kaabk..kabbk","kkkabkkbbkkk","..kabbbbbk..",".kbkkbbkkbk.",".kk.kbbk.kk.","....kkkk...."],"knight":["......rr........",".....rrrr.......","....kkkkkk......","...kaaaaaak.....","...kabbbbak..w..","...kkkkkkkk..w..","...kaaaaaak..w..","....kaaaak...w..","..kkccyycckkyyy.",".kaakcyyckaak.k.",".kaakccccckak...",".kkk.kccck.kk...","....kbbkbbk.....","....kak.kak.....","....knk.knk.....","....kkk.kkk....."],"princess":["....y.y.y.......","....yyyyy.......","...khhhhhk......","..khhsssshk.....","..khsesseshk....","..khsssssh......","..khhspsshk.....","..kh.kssk.hk....","....kmmmmk......","...kmmyymmk.....","..ksmmmmmmsk....","...kmmmmmmk.....","..kmmmmmmmmk....","..kMmmmmmmMk....",".kMMMMMMMMMMk...","..kkkkkkkkkk...."],"dragon":["...Y......Y.....","...Yk....kY.....","...kgkkkkgk.....","..kgggggggggk...","..kgvkgggvkgk...","..kgggggggggk...","..kggGGGGGggk...","...kgGkGkGgk....","MM.kkggggkk.MM..","MMMkgttttgkMMM..",".MkggttttggkM...","..kggttttggk..f.","..kggttttggkkof.","...kggggggkgkk..","...kgk..kgk.....","...kkk..kkk....."],"lion":["...kkkkkkkk.....","..koooooooook...",".koOooooooOook..",".koohhhhhhhook..","koohhehhhehhook.","koohhhhhhhhhook.","koohhhkkkhhhook.",".koohhppphhook..",".kooohhhhhoook..","..koooooooook.k.","...khhhhhhk..kok","..khhhtthhhk.ko.","..khhttttthhkk..","...khhhhhhhk....","...khk...khk....","...kkk...kkk...."],"sheep":["..kkkkkk....",".kwwwwwwkk..","kwwwwwwwwwk.","kwwwwwwwkkkk","kwwwwwwwkvkk","kwwwwwwwkkk.",".kwwwwwwwk..","..kkkkkkk...","..kk..kk....","..kk..kk...."],"coin":["..kkkk..",".kyyyYk.","kyytyyYk","kyytyyYk","kyytyyYk","kyyyyyYk",".kYYYYk.","..kkkk.."],"sword":[".......kk","......kwk",".....kwk.","....kwk..",".k.kwk...",".kykk....","..kyk....",".knkyk...","knk..k..."],"heart":[".kk.kk.","krrkrrk","krrrrrk","krrrrrk",".krrrk.","..krk..","...k..."],"castle":["k.k.k....k.k.k","kakak....kakak","kaaak.kk.kaaak","kaaakkrrkkaaak","kaaaakrrkaaaak","kaaaaakkaaaaak","kabaaaaaaaabak","kaaaaakkaaaaak","kaaaakbbkaaaak","kaaaakbbkaaaak","kkkkkkkkkkkkkk"],"flag":["kyyy..","kyyyy.","kyyy..","k.....","k.....","k....."]};
 const HEROES={
  knight:{name:'Knight',desc:'Brave and true',colors:[{n:'Classic',m:{}},{n:'Gold',m:{a:'#ffe27a',b:'#d9a520',c:'#e0413a'},cost:40},{n:'Shadow',m:{a:'#8a8fb0',b:'#4b4f70',c:'#8a3fe0',r:'#47d16a'},cost:80}]},
  princess:{name:'Princess',desc:'Kind and wise',colors:[{n:'Classic',m:{}},{n:'Ocean',m:{m:'#5cc8ff',M:'#2a8fd6'},cost:40},{n:'Rose',m:{m:'#ff7aa8',M:'#d9467a',h:'#8a5a3a'},cost:80}]},
@@ -304,13 +225,7 @@ const SONGS=[
  {t:'Great Is Thy Faithfulness',tune:'FAITHFULNESS',by:'William M. Runyan, 1923',bpm:96,bar:3,pick:0,n:'G4:1 G4:1 G4:1 G4:1.5 F4:.5 F4:1 Ab4:1 Ab4:1 Ab4:1 Ab4:1 G4:2 C5:1 D5:1 C5:1 Bb4:1.5 Ab4:.5 G4:1 F4:1 G4:1 A4:1 Bb4:3 Bb4:1 C5:1 D5:1 Eb5:1.5 D5:.5 C5:1 Bb4:1 Ab4:1 G4:1 G4:1 F4:2 C5:1 D5:1 Eb5:1 Eb5:1.5 Bb4:.5 C5:1 G4:1 G4:1 F4:1 Eb4:3 Bb4:1 Bb4:1 F4:1 Ab4:.75 G4:.25 G4:2 C5:1 C5:1 G4:1 Bb4:.75 Ab4:.25 Ab4:2 Bb4:1 C5:1 D5:1 Eb5:1 Bb4:1 C5:1 D5:1 Eb5:1 C5:1 Bb4:3 Bb4:1 C5:1 D5:1 Eb5:1.5 D5:.5 C5:1 Bb4:1 Ab4:1 G4:1 G4:1 F4:2 C5:1 D5:1 Eb5:1 Eb5:1.5 Bb4:.5 Bb4:1 G4:1 Ab4:1 D4:1 Eb4:3'},
  {t:'Nothing But the Blood',tune:'PLAINFIELD',by:'Robert Lowry, 1876',bpm:104,bar:4,pick:0,n:'F4:1 F4:1 F4:1 G4:1 A4:1 C5:1 A4:2 F4:.75 F4:.25 F4:.75 G4:.25 A4:1 A4:1 G4:2 F4:2 F4:1 F4:1 F4:1 G4:1 A4:1 C5:1 A4:2 F4:.75 F4:.25 F4:.75 G4:.25 A4:1 A4:1 G4:2 F4:2 C5:2 A4:1 G4:1 A4:1 C5:1 A4:2 G4:2 G4:1 F4:1 G4:1 G4:1 A4:1 C5:1 C5:2 A4:1 G4:1 A4:1 C5:1 A4:2 F4:.75 F4:.25 F4:.75 G4:.25 A4:1 A4:1 G4:2 F4:2'},
  {t:'Be Thou My Vision',tune:'SLANE',by:'Irish traditional',bpm:100,bar:3,pick:0,n:'Eb4:1 Eb4:1 F4:.5 Eb4:.5 C4:1 Bb3:1 C4:1 Eb4:1 Eb4:1 F4:1 G4:3 F4:1 F4:1 F4:1 F4:1 G4:1 Bb4:1 C5:1 Bb4:1 G4:1 Bb4:3 C5:1 C5:.5 D5:.5 Eb5:.5 D5:.5 C5:1 Bb4:1 G4:1 Bb4:1 Eb4:1 D4:1 C4:2 Bb3:1 Eb4:1 G4:1 Bb4:1 C5:.5 Bb4:.5 G4:1 Eb4:.5 G4:.5 F4:1 Eb4:1 Eb4:1 Eb4:3'},
- {t:"This Is My Father's World",tune:'TERRA BEATA',by:'English trad., arr. F. L. Sheppard, 1915',bpm:108,bar:4,pick:1,n:'D4:.5 E4:.5 F#4:1 A4:1 F#4:1 E4:1 D4:3 E4:.5 F#4:.5 G4:1 B4:1 A4:1 F#4:1 E4:3 B4:1 A4:1 F#4:1 F#4:1 E4:.5 D4:.5 F#4:1 E4:1 D4:1 A3:1 D4:.5 E4:.5 F#4:1 A4:1 E4:.5 F#4:.5 D4:3 A4:1 D5:1 A4:1 B4:1 C#5:1 D5:3 D5:.5 C#5:.5 B4:1 D5:1 C#5:1 B4:1 A4:3 B4:.5 B4:.5 A4:1 F#4:1 F#4:1 E4:.5 D4:.5 F#4:1 E4:1 D4:1 A3:1 D4:.5 E4:.5 F#4:1 A4:1 E4:.5 F#4:.5 D4:3'},
- {t:'Rejoice, the Lord Is King',tune:"DARWALL'S 148TH",by:'John Darwall, 1770',bpm:112,bar:4,pick:1,n:'D4:1 F#4:1 D4:1 A4:1 F#4:1 D5:3 C#5:1 B4:1 A4:1 G4:1 F#4:1 E4:3 E4:1 F#4:1 D4:1 B4:1 A4:1 G#4:1 E4:1 E5:1 D5:1 C#5:2 B4:2 A4:3 A4:1 B4:2 C#5:2 D5:3 D4:1 E4:1 F#4:1 G4:1 A4:1 B4:1 C#5:1 D5:1 E5:1 D5:2 C#5:2 D5:3'},
- {t:'O for a Thousand Tongues to Sing',tune:'AZMON',by:'Carl G. Gläser, 1828; arr. Lowell Mason',bpm:104,bar:3,pick:1,n:'D4:1 G4:.5 G4:.5 A4:1 A4:1 B4:.5 A4:.5 G4:1 A4:1 B4:.5 B4:.5 C5:1 B4:1 A4:2 D5:1 D5:.5 B4:.5 B4:1 G4:1 G4:.5 E4:.5 E4:1 G4:.5 E4:.5 D4:.5 G4:.5 G4:1 A4:1 G4:2'},
- {t:'I Stand Amazed in the Presence',tune:"MY SAVIOR'S LOVE",by:'Charles H. Gabriel, 1905',bpm:100,bar:4,pick:1,n:'Eb4:1 Eb4:1 C4:1 Eb4:1 Ab4:.75 Bb4:.25 C5:2 Ab4:1 Ab4:1 G4:1 G4:.75 G4:.25 Ab4:1 Bb4:1 Ab4:3 Eb4:1 F4:1 F4:1 Ab4:1 G4:.75 F4:.25 Eb4:2 Ab4:1 Bb4:1 C5:1 C5:.75 C5:.25 Bb4:1 Bb4:1 Ab4:3 R:1 C5:2 C5:.75 Bb4:.25 Ab4:1 Eb5:2 Eb5:.75 Db5:.25 C5:1 Bb4:1 Bb4:1 Bb4:1.5 C5:.5 Db5:1 C5:1 Bb4:2 C5:2 C5:.75 Bb4:.25 Ab4:1 Eb5:2 Eb5:.75 Db5:.25 C5:1 Bb4:1 C5:.5 Db5:.5 C5:1.5 Bb4:.5 Ab4:1 G4:1 Ab4:2'},
- {t:'Take My Life and Let It Be',tune:'HENDON',by:'H. A. César Malan, 1827',bpm:104,bar:4,pick:0,n:'F4:1 F4:1 F4:.5 C4:.5 F4:.5 A4:.5 C5:1 Bb4:1 A4:2 A4:1 A4:1 A4:.5 G4:.5 Bb4:.5 G4:.5 F4:1 E4:.5 G4:.5 F4:2 A4:1 A4:1 G4:1 G4:.5 A4:.5 Bb4:1 C5:1 Bb4:1 A4:1 C5:1 C5:1 D5:1 C5:1 C5:.5 Bb4:.5 Bb4:.5 A4:.5 A4:1 G4:1 F4:1 G4:1 A4:1 Bb4:.5 G4:.5 F4:1 E4:1 F4:2'},
- {t:'Guide Me, O Thou Great Jehovah',tune:'CWM RHONDDA',by:'John Hughes, 1907',bpm:96,bar:4,pick:0,n:'D4:1 E4:1 D4:1.5 G4:.5 G4:.5 F#4:.5 G4:.5 A4:.5 B4:1 A4:1 B4:1 G4:1 E4:1 C5:1 B4:1 A4:1 G4:2 D4:1 E4:1 D4:1.5 G4:.5 G4:.5 F#4:.5 G4:.5 A4:.5 B4:1 A4:1 B4:1 C5:1 D5:1 C5:.5 A4:.5 G4:1 F#4:1 G4:2 A4:1.5 B4:.5 C5:1 A4:1 B4:1.5 C5:.5 D5:1 B4:1 D5:1.5 D5:.5 C5:.5 B4:.5 A4:.5 G4:.5 D5:4 D5:1.5 C5:.5 B4:.5 D5:.5 C5:.5 A4:.5 G4:1 F#4:1 G4:2'},
-  {t:'It Is Well with My Soul',tune:'VILLE DU HAVRE',by:'Philip P. Bliss, 1876',bpm:96,bar:4,pick:1,n:'G4:1 G4:2 F4:1 E4:1 E4:2 D4:1 E4:1 F4:1 A4:1 G4:1 F4:1 E4:3 G4:1 C5:2 B4:1 A4:1 A4:2 G4:1 F#4:1 G4:3 G4:1 C5:2 C5:1 B4:1 A4:2 A4:1 A4:1 D5:2 D5:1 C5:1 B4:2 A4:1 G4:1 C5:2 C5:1 C5:1 C5:2 B4:1.5 C5:.5 C5:2 G4:1 G4:1 G4:6 G4:1 G4:1 G4:6 E4:1 G4:1 A4:2 A4:1 C5:1 C5:2 B4:1.5 C5:.5 C5:3'},
+ {t:"This Is My Father's World",tune:'TERRA BEATA',by:'English trad., arr. F. L. Sheppard, 1915',bpm:108,bar:4,pick:1,n:'D4:.5 E4:.5 F#4:1 A4:1 F#4:1 E4:1 D4:3 E4:.5 F#4:.5 G4:1 B4:1 A4:1 F#4:1 E4:3 B4:1 A4:1 F#4:1 F#4:1 E4:.5 D4:.5 F#4:1 E4:1 D4:1 A3:1 D4:.5 E4:.5 F#4:1 A4:1 E4:.5 F#4:.5 D4:3 A4:1 D5:1 A4:1 B4:1 C#5:1 D5:3 D5:.5 C#5:.5 B4:1 D5:1 C#5:1 B4:1 A4:3 B4:.5 B4:.5 A4:1 F#4:1 F#4:1 E4:.5 D4:.5 F#4:1 E4:1 D4:1 A3:1 D4:.5 E4:.5 F#4:1 A4:1 E4:.5 F#4:.5 D4:3'}
 ];
 const SONG_COST=25,SWORD_COST=30;
 const STOP=new Set(['the','and','but','for','with','that','this','are','was','his','her','its','our','who','not','all','has','have','from','into','him','them','they','you','your']);
@@ -355,7 +270,7 @@ function syncCustom(){
  QUEST_KEYS=['wsc','hc'].filter(x=>CAT[x]).concat(S.custom.map(c=>c.id));
 }
 const KEY='catechism-quest-app-v1';
-function newKid(name,hero){return{id:uid(),name:name||'Hero',hero:hero||null,quest:null,open:{},colors:{},owned:{},prog:{},cps:{},srs:{},coins:0,swords:1,songs:[0],song:0,made:Date.now(),at:Date.now()};}
+function newKid(name,hero){return{id:uid(),name:name||'Hero',hero:hero||null,quest:null,open:{},colors:{},owned:{},prog:{},cps:{},coins:0,swords:1,songs:[0],song:0,made:Date.now(),at:Date.now()};}
 const clone=x=>JSON.parse(JSON.stringify(x));
 function load(){try{const s=localStorage.getItem(KEY);if(s)return JSON.parse(s);}catch(e){}return null;}
 let S=load()||{v:1,kids:[],kidId:null,sound:true,music:true,dels:[],custom:[]};
@@ -374,16 +289,11 @@ function fix(){
   if(k.hero&&!HEROES[k.hero])k.hero='knight';
   // a quest someone made on another device isn't here; keep the pointer, the app asks for a quest
   if(k.quest&&!CAT[k.quest]&&!/^my_/.test(k.quest))k.quest=null;
-  ['colors','owned','prog','cps','open','srs'].forEach(f=>{if(!k[f]||typeof k[f]!=='object'||Array.isArray(k[f]))k[f]={};});
+  ['colors','owned','prog','cps','open'].forEach(f=>{if(!k[f]||typeof k[f]!=='object'||Array.isArray(k[f]))k[f]={};});
   if(typeof k.coins!=='number')k.coins=0;if(typeof k.swords!=='number')k.swords=1;
   if(!Array.isArray(k.songs))k.songs=[0];if(!k.songs.includes(0))k.songs.unshift(0);
   if(typeof k.song!=='number'||!k.songs.includes(k.song))k.song=0;
   if(typeof k.made!=='number')k.made=0;if(typeof k.at!=='number')k.at=0;
-  // spaced repetition: every learned question gets a review schedule. Lambs learned before this
-  // existed get one now, spread over the next few days so they don't all wander off at once.
-  let j=0;const t0=today();
-  Object.keys(k.prog).forEach(key=>{if(k.prog[key]>0&&!(k.srs[key]&&typeof k.srs[key].d==='number')){k.srs[key]={b:k.prog[key]>=3?1:0,d:t0+1+(j++%6)};}});
-  Object.keys(k.srs).forEach(key=>{if(!(k.prog[key]>0))delete k.srs[key];});
  });
  S.kids.sort((a,b)=>a.made-b.made);
  if(!S.kids.some(k=>k.id===S.kidId))S.kidId=S.kids[0]?S.kids[0].id:null;
@@ -400,22 +310,8 @@ const pkey=(qid,i)=>qid+':'+(i+1);
 const ckey=(qid,s)=>qid+':L'+(s+1);
 const stars=(k,i,qid)=>k.prog[pkey(qid||k.quest,i)]||0;
 const learnedIn=(k,qid)=>{const c=CAT[qid];return c?c.qas.filter((x,i)=>stars(k,i,qid)>0).length:0;};
-// ----- spaced repetition (the flock) -----
-// Each learned question is a lamb. Review gaps grow 1, 3, 7, 14, 30… days after each right answer;
-// when a review is due the lamb wanders off until the kid finds it again in a quick review.
-const GAPS=[1,3,7,14,30,60,120,240];
-function today(){const d=new Date();return Math.floor((d.getTime()-d.getTimezoneOffset()*60000)/86400000);}
-const srsOf=(k,i,qid)=>k.srs[pkey(qid||k.quest,i)];
-const isLost=(k,i,qid)=>{const r=srsOf(k,i,qid);return stars(k,i,qid)>0&&!!r&&r.d<=today();};
-const learnedIdx=k=>QAS().map((x,i)=>i).filter(i=>stars(k,i)>0);
-const lostIdx=k=>learnedIdx(k).filter(i=>isLost(k,i)).sort((a,b)=>srsOf(k,a).d-srsOf(k,b).d||a-b);
-function srsSeed(k,i){k.srs[pkey(k.quest,i)]={b:0,d:today()+1};}
-// right: the next review moves further out. wrong: start over, back again tomorrow.
-function srsReview(k,i,ok){const key=pkey(k.quest,i),r=k.srs[key]||{b:0,d:0};
- r.b=ok?Math.min(GAPS.length-1,r.b+1):0;r.d=today()+GAPS[ok?r.b:0];k.srs[key]=r;return r;}
-const daysText=n=>n<=0?'today':n===1?'tomorrow':`in ${n} days`;
-const sheepCount=k=>k.quest?learnedIdx(k).length-lostIdx(k).length:0;
-const inGame=n=>['study','fill','bonus','herd'].includes(n);
+const sheepCount=k=>k.quest?learnedIn(k,k.quest):0;
+const inGame=n=>['study','fill','bonus'].includes(n);
 
 // ----- saving -----
 // This device keeps everything in localStorage. When the page runs inside Claude with the
@@ -508,49 +404,36 @@ function voice(a,f,t,d,type,vol,dest){const o=a.createOscillator(),g=a.createGai
 function hat(a,t,dest,v){if(!MU.noise){const b=a.createBuffer(1,a.sampleRate*.1,a.sampleRate),c=b.getChannelData(0);for(let i=0;i<c.length;i++)c[i]=Math.random()*2-1;MU.noise=b;}
  const s=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain();s.buffer=MU.noise;f.type='highpass';f.frequency.value=6500;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+.05);s.connect(f);f.connect(g);g.connect(dest);s.start(t);s.stop(t+.06);}
 function kick(a,t,dest){const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(45,t+.12);g.gain.setValueAtTime(.35,t);g.gain.exponentialRampToValueAtTime(.0001,t+.15);o.connect(g);g.connect(dest);o.start(t);o.stop(t+.16);}
-// The jukebox plays the kid's unlocked hymns on shuffle: each one plays once through, then a
-// different unlocked hymn starts. Every hymn plays once before any plays again.
 function playSong(k){
  const a=ac();if(!a)return;stopSong();
  const s=SONGS[k];if(!s)return;
  const master=a.createGain(),lp=a.createBiquadFilter();lp.type='lowpass';lp.frequency.value=3200;master.gain.value=.5;lp.connect(master);master.connect(a.destination);
- Object.assign(MU,{on:true,k,master,lp,seq:parseSong(s.n),i:0,spb:60/s.bpm,bar:s.bar,pick:s.pick||0,t:a.currentTime+.12,beat:0,end:0});
- MU.bt=MU.t;MU.bag=(MU.bag||[]).filter(x=>x!==k);
+ Object.assign(MU,{on:true,k,master,lp,seq:parseSong(s.n),i:0,spb:60/s.bpm,bar:s.bar,pick:s.pick||0,t:a.currentTime+.12,beat:0});
+ MU.bt=MU.t;
  MU.timer=setInterval(sched,50);sched();
- if(V.name==='music')render();
-}
-function nextSong(){
- const k=kid(),own=k?k.songs.filter(i=>SONGS[i]):[];if(!own.length)return 0;
- MU.bag=(MU.bag||[]).filter(i=>own.includes(i)&&i!==MU.k);
- if(!MU.bag.length)MU.bag=shuffle(own.filter(i=>i!==MU.k||own.length===1));
- return MU.bag.shift();
 }
 function sched(){
  const a=AC;if(!a||!MU.on)return;const horizon=a.currentTime+.3;
- if(MU.end){if(a.currentTime>=MU.end)playSong(nextSong());return;}
- while(MU.t<horizon&&MU.i<MU.seq.length){
+ while(MU.t<horizon){
   const nt=MU.seq[MU.i],dur=nt.d*MU.spb;
   if(!nt.r){voice(a,hz(nt.m),MU.t,dur,'square',.07,MU.lp);voice(a,hz(nt.m-12),MU.t,dur,'triangle',.16,MU.lp);}
   MU.t+=dur;MU.i++;
+  if(MU.i>=MU.seq.length){MU.i=0;MU.t+=MU.spb*2;}
  }
- while(MU.bt<horizon&&MU.bt<MU.t-.001){
+ while(MU.bt<horizon){
   const pos=((MU.beat-MU.pick)%MU.bar+MU.bar)%MU.bar;
   if(pos===0)kick(a,MU.bt,MU.master);
   hat(a,MU.bt,MU.master,pos===0?.05:.03);
   MU.bt+=MU.spb;MU.beat++;
+  if(MU.i===0&&MU.bt>MU.t-MU.spb*2-.001&&MU.bt<MU.t){MU.bt=MU.t;MU.beat=0;}
  }
- if(MU.i>=MU.seq.length&&MU.bt>=MU.t-.001)MU.end=MU.t+MU.spb*2;   // a short breath between hymns
 }
 function stopSong(){
  if(MU.timer)clearInterval(MU.timer);MU.timer=null;MU.on=false;
  if(MU.master&&AC){const m=MU.master;try{m.gain.setValueAtTime(m.gain.value,AC.currentTime);m.gain.linearRampToValueAtTime(.0001,AC.currentTime+.15);}catch(e){}setTimeout(()=>{try{m.disconnect();}catch(e){}},400);}
  MU.master=null;MU.k=-1;
 }
-function syncMusic(){
- const k=kid();if(!(S.music&&k&&V.name!=='title')){if(MU.on)stopSong();return;}
- // keep the current hymn going; start over only when nothing plays or this kid hasn't unlocked it
- if(!MU.on||!k.songs.includes(MU.k)){MU.bag=[];playSong(k.songs.includes(k.song)?k.song:0);}
-}
+function syncMusic(){const k=kid();const want=S.music&&k&&V.name!=='title'?k.song:-1;if(want<0){if(MU.on)stopSong();return;}if(!MU.on||MU.k!==want)playSong(want);}
 
 // voice
 let TTS=null;
@@ -624,27 +507,26 @@ let V={name:'title'},G={},CR={hero:null,name:'',editId:null},DEL=null,started=fa
 function nav(v){V=v;V.scroll=true;DEL=null;closeModal();render();window.scrollTo(0,0);}
 function render(){
  const k=kid();
- if(['map','flock','shop','music','quests','herd'].includes(V.name)&&!(k&&k.hero))V={name:S.kids.length?'players':'title'};
- else if(['map','flock','shop','music','herd'].includes(V.name)&&!QD())V={name:'quests'};
- const f={title:titleV,players:playersV,create:createV,quests:questsV,map:mapV,study:studyV,fill:fillV,bonus:bonusV,herd:herdV,flock:flockV,shop:shopV,music:musicV,settings:settingsV,maker:makerV}[V.name]||titleV;
+ if(['map','flock','shop','music','quests'].includes(V.name)&&!(k&&k.hero))V={name:S.kids.length?'players':'title'};
+ else if(['map','flock','shop','music'].includes(V.name)&&!QD())V={name:'quests'};
+ const f={title:titleV,players:playersV,create:createV,quests:questsV,map:mapV,study:studyV,fill:fillV,bonus:bonusV,flock:flockV,shop:shopV,music:musicV,settings:settingsV,maker:makerV}[V.name]||titleV;
  app.innerHTML=f();
  $('#nav').innerHTML=['map','flock','shop','music'].includes(V.name)?navBar():'';
  // center the current level only when arriving at the map, not on every re-render
  if(V.name==='map'&&V.scroll){V.scroll=false;requestAnimationFrame(()=>{const c=document.querySelector('.node.cur');if(c)c.scrollIntoView({block:'center'});});}
 }
 function navBar(){
- const it=[['map','MAP',spr('flag',4)],['flock','FLOCK',spr('sheep',3)],['shop','SHOP',spr('coin',4)],['music','MUSIC',spr('note',3,{k:'#ffffff',m:'#ffd23f'})]];
- const lost=lostIdx(kid()).length;
- return`<div class="nav">${it.map(x=>`<button class="${V.name===x[0]?'on':''}" data-act="go" data-to="${x[0]}">${x[2]}${x[1]}${x[0]==='flock'&&lost?`<span class="badge" aria-label="${lost} lost">${lost}</span>`:''}</button>`).join('')}</div>`;
+ const it=[['map','MAP',spr('flag',4)],['flock','FLOCK',spr('sheep',3)],['shop','SHOP',spr('coin',4)],['music','MUSIC','<span style="font-size:22px;line-height:32px">♪</span>']];
+ return`<div class="nav">${it.map(x=>`<button class="${V.name===x[0]?'on':''}" data-act="go" data-to="${x[0]}">${x[2]}${x[1]}</button>`).join('')}</div>`;
 }
 function hud(){
  const k=kid(),q=QD();
  return`<div class="hud"><button class="who" data-act="players">${heroImg(k,2)}<span>${esc(k.name)}</span></button>
- <button class="ib ${S.music?'':'off'}" data-act="toggleMusic" aria-label="Music">${ic('note',3)}</button><button class="ib" data-act="go" data-to="settings" aria-label="Settings">${ic('gear',3)}</button></div>
+ <button class="ib ${S.music?'':'off'}" data-act="toggleMusic" aria-label="Music">♪</button><button class="ib" data-act="go" data-to="settings" aria-label="Settings">${spr('gear',2)}</button></div>
  <div class="hud2"><span class="chip">${spr('coin',2)}<b>${k.coins}</b><i>COINS</i></span><span class="chip">${spr('sheep',2)}<b>${sheepCount(k)}</b><i>LAMBS</i></span><span class="chip">${spr('sword',2)}<b>${k.swords}</b><i>SWORDS</i></span></div>
- <button class="qbar" data-act="go" data-to="quests" aria-label="Change quest"><span>${esc(q.short.toUpperCase())}</span><span class="sp"></span><span>${learnedIn(k,k.quest)}/${N()} ${ic('play',2,W)}</span></button>`;
+ <button class="qbar" data-act="go" data-to="quests" aria-label="Change quest"><span>${esc(q.short.toUpperCase())}</span><span class="sp"></span><span>${sheepCount(k)}/${N()} ▸</span></button>`;
 }
-function topBar(to,title){return`<div class="top"><button class="ib" data-act="go" data-to="${to}" aria-label="Back">${ic('back',3)}</button><div class="ttl">${esc(title)}</div><span style="width:46px"></span></div>`;}
+function topBar(to,title){return`<div class="top"><button class="ib" data-act="go" data-to="${to}" aria-label="Back">◀</button><div class="ttl">${esc(title)}</div><span style="width:46px"></span></div>`;}
 
 function titleV(){
  return`<div class="title"><div class="logo">CATECHISM<br>QUEST<small>LEARN · PLAY · PRAISE</small></div>
@@ -666,7 +548,7 @@ function installHTML(){
  return'';
 }
 function playersV(){
- return`<div class="top"><span style="width:46px"></span><div class="ttl">WHO'S PLAYING?</div><button class="ib" data-act="go" data-to="settings" aria-label="Settings">${ic('gear',3)}</button></div>
+ return`<div class="top"><span style="width:46px"></span><div class="ttl">WHO'S PLAYING?</div><button class="ib" data-act="go" data-to="settings" aria-label="Settings">${spr('gear',2)}</button></div>
  <div class="plist">${S.kids.map(k=>{const c=CAT[k.quest];return`<button class="pbtn" data-act="pickKid" data-id="${k.id}">${k.hero?heroImg(k,4):spr('knight',4,{a:'#c9c3d6',b:'#9a93b0',c:'#c9c3d6',r:'#c9c3d6',y:'#c9c3d6'})}<div><div class="pn">${esc(k.name)}</div><div class="pp">${!k.hero?'Tap to choose a hero':c?`${HEROES[k.hero].name} · ${esc(c.short)} ${learnedIn(k,k.quest)}/${c.qas.length}`:'Tap to pick a quest'}</div></div></button>`;}).join('')}</div>
  <button class="btn acc" style="width:100%" data-act="newHero">+ NEW HERO</button>`;
 }
@@ -674,7 +556,7 @@ function createV(){
  return`${topBar(S.kids.length?'players':'title','CHOOSE YOUR HERO')}
  <div class="heroes">${HERO_KEYS.map(h=>`<button class="hcard ${CR.hero===h?'on':''}" data-act="pickHero" data-h="${h}">${spr(h,5)}<div class="hn">${HEROES[h].name.toUpperCase()}</div><div class="hd">${HEROES[h].desc}</div></button>`).join('')}</div>
  <div class="box"><div class="lbl">YOUR NAME</div><input class="name" id="cname" maxlength="16" placeholder="Type your name" value="${esc(CR.name)}" autocomplete="off"></div>
- <button class="btn ok" style="width:100%" data-act="createGo" ${CR.hero?'':'disabled'}>${CR.hero?'NEXT '+ic('play',2,W):'PICK A HERO'}</button>`;
+ <button class="btn ok" style="width:100%" data-act="createGo" ${CR.hero?'':'disabled'}>${CR.hero?'NEXT ▶':'PICK A HERO ▲'}</button>`;
 }
 function questsV(){
  const k=kid();
@@ -713,28 +595,28 @@ function mapV(){
   const sec=ns.filter(x=>x.s===s);
   const rows=sec.map((nd,j)=>({nd,gi:idx+j,x:nd.t==='c'?50:X[j%4]}));
   const H=rows.length*92,pts=rows.map((r,j)=>`${r.x},${j*92+46}`).join(' ');
-  const th=storyFor(s,q.lands.length),sub=(q.id==='hc'?land.name:`Land ${s+1}`)+' · '+th.r;
-  lands+=`<div class="land"><div class="landname" style="background:${th.c}"><span class="emb">${spr(th.e,th.e==='castle'||th.e==='lion'||th.e==='sheep'?2:3,th.m)}</span><span><b>${esc(th.n.toUpperCase())}</b><small>${esc(sub)}</small></span></div><div class="path"><svg viewBox="0 0 100 ${H}" preserveAspectRatio="none" style="height:${H}px"><polyline points="${pts}" fill="none" stroke="#1b1530" stroke-width="6" stroke-dasharray="2 12" vector-effect="non-scaling-stroke" stroke-linecap="square"/></svg>
+  const label=q.id==='hc'?land.name.toUpperCase():`LAND ${s+1} · ${land.name.toUpperCase()}`;
+  lands+=`<div class="land"><div class="landname">${esc(label)}</div><div class="path"><svg viewBox="0 0 100 ${H}" preserveAspectRatio="none" style="height:${H}px"><polyline points="${pts}" fill="none" stroke="#1b1530" stroke-width="6" stroke-dasharray="2 12" vector-effect="non-scaling-stroke" stroke-linecap="square"/></svg>
   ${rows.map(r=>{const st=isDone(k,r.nd)?'done':r.gi===cur?'cur':open?'':'lock';const me=r.gi===cur?`<span class="me">${heroImg(k,3)}</span>`:'';
-   if(r.nd.t==='q'){const p=stars(k,r.nd.i);return`<div class="nrow"><button class="node ${st}" style="left:${r.x}%" data-act="node" data-g="${r.gi}" aria-label="Question ${q.qas[r.nd.i].n}">${me}<span class="nn">${st==='lock'?spr('lock',3,LOCKG):q.qas[r.nd.i].n}</span><span class="ns">${st==='done'?starRow(p):st==='cur'?'GO!':''}</span></button></div>`;}
+   if(r.nd.t==='q'){const p=stars(k,r.nd.i);return`<div class="nrow"><button class="node ${st}" style="left:${r.x}%" data-act="node" data-g="${r.gi}" aria-label="Question ${q.qas[r.nd.i].n}">${me}<span class="nn">${st==='lock'?'🔒':q.qas[r.nd.i].n}</span><span class="ns">${st==='done'?'★'.repeat(p)+'☆'.repeat(3-p):st==='cur'?'GO!':''}</span></button></div>`;}
    return`<div class="nrow"><button class="node castle ${st}" style="left:${r.x}%" data-act="node" data-g="${r.gi}" aria-label="Bonus castle">${me}${spr('castle',4,st==='lock'?{a:'#ddd8e8',b:'#b3acc6',r:'#b3acc6'}:null)}<span class="ns">${st==='done'?'CLEAR':'BONUS'}</span></button></div>`;}).join('')}</div></div>`;
   idx+=sec.length;
  });
  const doneAll=cur>=ns.length;
- return hud()+(doneAll?`<div class="box center"><h2 style="font-size:13px;color:var(--pri2)">QUEST COMPLETE!</h2><p style="font-size:18px">You learned all ${n} questions of the ${esc(q.title)} and walked all the way from the Garden of Eden to the New Heaven &amp; Earth! Replay any level to earn more stars and coins.</p></div>`:'')+lands;
+ return hud()+(doneAll?`<div class="box center"><h2 style="font-size:13px;color:var(--pri2)">QUEST COMPLETE!</h2><p style="font-size:18px">You learned all ${n} questions of the ${esc(q.title)}. Replay any level to earn more stars and coins.</p></div>`:'')+lands;
 }
 
 // ----- study -----
 function studyV(){
  const it=QAS()[V.i],w=words(it.a),hide=Math.round(w.length*G.level/4),hidden=new Set(G.order.slice(0,hide));
  const tip=G.level===0?'Read it out loud together. Then tap HIDE and say it from memory!':G.level>=4?'All hidden! Say the whole answer. Tap a blank to peek.':'Say the whole answer out loud. Tap a blank to peek.';
- const refs=it.refs?`<div class="row" style="margin-top:12px"><button class="btn sm" data-act="toggleRefs">${ic('book')} ${G.refs?'HIDE':'SHOW'} SCRIPTURE</button></div>${G.refs?`<div class="refs">${esc(it.refs)}</div>`:''}`:'';
+ const refs=it.refs?`<div class="row" style="margin-top:12px"><button class="btn sm" data-act="toggleRefs">📖 ${G.refs?'HIDE':'SHOW'} SCRIPTURE</button></div>${G.refs?`<div class="refs">${esc(it.refs)}</div>`:''}`:'';
  return`${topBar('map','QUESTION '+it.n)}
- <section class="box dark"><div class="lbl">QUESTION ${it.n}</div><div class="qtext">${esc(it.q)}</div><div class="row" style="margin-top:12px"><button class="btn sm" data-act="sayQ">${ic('speaker')} HEAR IT</button></div></section>
+ <section class="box dark"><div class="lbl">QUESTION ${it.n}</div><div class="qtext">${esc(it.q)}</div><div class="row" style="margin-top:12px"><button class="btn sm" data-act="sayQ">🔊 HEAR IT</button></div></section>
  <section class="box"><div class="lbl">ANSWER</div><div class="words ${w.length>40?'long':''}">${w.map((x,j)=>hidden.has(j)&&!G.peek.has(j)?`<button class="blank" data-act="peek" data-j="${j}" aria-label="hidden word" style="width:${Math.max(2,x.length)*.6}em"></button>`:`<span class="w">${esc(x)}</span>`).join(' ')}</div>${refs}</section>
- <div class="row" style="margin-bottom:14px"><button class="btn sm" data-act="sayA">${ic('speaker')} READ</button><button class="btn sm pri" data-act="hideMore" ${G.level>=4?'disabled':''}>${ic('shut',2,W)} HIDE</button><button class="btn sm" data-act="showAll">${ic('eye')} SHOW</button></div>
+ <div class="row" style="margin-bottom:14px"><button class="btn sm" data-act="sayA">🔊 READ</button><button class="btn sm pri" data-act="hideMore" ${G.level>=4?'disabled':''}>🙈 HIDE</button><button class="btn sm" data-act="showAll">👀 SHOW</button></div>
  <div class="tip">${tip}</div>
- <button class="btn ok" style="width:100%" data-act="startFill">I'M READY! ${ic('play',2,W)}</button>`;
+ <button class="btn ok" style="width:100%" data-act="startFill">I'M READY! ▶</button>`;
 }
 function startStudy(i){V={name:'study',i};const n=words(QAS()[i].a).length;G={level:0,order:shuffle([...Array(n).keys()]),peek:new Set(),refs:false};render();window.scrollTo(0,0);}
 
@@ -809,7 +691,7 @@ function bonusV(){
   return`${head}<section class="box"><div class="lbl">WHICH QUESTION HAS THIS ANSWER?</div><div class="qtext">${esc(shortText(qa[C.i].a,40))}</div></section>
   <div class="opts">${C.opts.map(j=>`<button class="opt long ${C.wrong.has(j)?'bad':''}" data-act="pick" data-j="${j}" ${C.wrong.has(j)?'disabled':''}>Q${qa[j].n}. ${esc(qa[j].q)}</button>`).join('')}</div>`;
  }
- return`${head}<section class="box dark"><div class="lbl">PICK THE RIGHT ANSWER · Q${qa[C.i].n}</div><div class="qtext">${esc(qa[C.i].q)}</div><div class="row" style="margin-top:12px"><button class="btn sm" data-act="sayBonusQ">${ic('speaker')} HEAR IT</button></div></section>
+ return`${head}<section class="box dark"><div class="lbl">PICK THE RIGHT ANSWER · Q${qa[C.i].n}</div><div class="qtext">${esc(qa[C.i].q)}</div><div class="row" style="margin-top:12px"><button class="btn sm" data-act="sayBonusQ">🔊 HEAR IT</button></div></section>
  <div class="opts">${C.opts.map(j=>`<button class="opt long ${C.wrong.has(j)?'bad':''}" data-act="pick" data-j="${j}" ${C.wrong.has(j)?'disabled':''}>${esc(shortText(qa[j].a,18))}</button>`).join('')}</div>`;
 }
 // Advance after a short pause; ignores taps in between and does nothing if the player left the round.
@@ -821,15 +703,12 @@ function finishLevel(){
  if(G.done)return;G.done=true;
  const k=kid(),i=V.i,key=pkey(k.quest,i),m=G.mistakes,st=starsFor(m),prev=k.prog[key]||0,first=!prev;
  if(st>prev)k.prog[key]=st;
- // a lost lamb's level played on the map counts as its review
- const wasLost=!first&&isLost(k,i);
- if(first)srsSeed(k,i);else if(wasLost)srsReview(k,i,st>=2);
  const coins=first?st*5:st*2;k.coins+=coins;save(k);
  showModal(`<h2>${st===3?'PERFECT!':st===2?'GREAT JOB!':'YOU DID IT!'}</h2>
- <div class="bigstars">${[0,1,2].map(n=>`<span class="${n<st?'on':''}">${spr('star',6,n<st?null:STARG)}</span>`).join('')}</div>
+ <div class="bigstars">${[0,1,2].map(n=>`<span class="${n<st?'on':''}">★</span>`).join('')}</div>
  <p>${st<3?'Fewer oops = more stars. Replay anytime to earn 3!':'Every word in the right place!'}</p>
- <div class="rewards"><div class="rw">${spr('coin',3)} +${coins} COINS</div>${first?`<div class="rw">${spr('sheep',3)} A LAMB JOINED YOUR FLOCK!</div>`:wasLost?`<div class="rw">${spr('sheep',3)} A LOST LAMB CAME HOME!</div>`:''}</div>
- <div class="col"><button class="btn ok" data-act="nextNode">NEXT ${ic('play',2,W)}</button><button class="btn" data-act="go" data-to="map">MAP</button></div>`);
+ <div class="rewards"><div class="rw">${spr('coin',3)} +${coins} COINS</div>${first?`<div class="rw">${spr('sheep',3)} A LAMB JOINED YOUR FLOCK!</div>`:''}</div>
+ <div class="col"><button class="btn ok" data-act="nextNode">NEXT ▶</button><button class="btn" data-act="go" data-to="map">MAP</button></div>`);
  sfx.win();setTimeout(()=>confetti(st===3?160:80),150);
 }
 function finishBonus(){
@@ -840,7 +719,7 @@ function finishBonus(){
  <p>${perfect?'A perfect bonus round!':'You finished the bonus round!'}</p>
  <div class="rewards"><div class="rw">${spr('coin',3)} +${coins} COINS${perfect?' (PERFECT!)':''}</div>${first?`<div class="rw">${spr('sword',3)} +1 SWORD</div>`:''}</div>
  <p class="tiny">Use swords during a game to knock out a wrong answer.</p>
- <div class="col"><button class="btn ok" data-act="nextNode">NEXT ${ic('play',2,W)}</button><button class="btn" data-act="go" data-to="map">MAP</button></div>`);
+ <div class="col"><button class="btn ok" data-act="nextNode">NEXT ▶</button><button class="btn" data-act="go" data-to="map">MAP</button></div>`);
  sfx.win();setTimeout(()=>confetti(200),150);
 }
 function openNode(gi){
@@ -851,68 +730,13 @@ function openNode(gi){
 
 // ----- flock / shop / music / settings -----
 function flockV(){
- const k=kid(),q=QD(),learned=learnedIdx(k),lost=lostIdx(k),lostSet=new Set(lost),home=learned.filter(i=>!lostSet.has(i));
- const H=Math.max(300,140+Math.ceil(home.length/6)*46);
+ const k=kid(),q=QD(),learned=QAS().map((x,i)=>i).filter(i=>stars(k,i)>0);
+ const H=Math.max(340,140+Math.ceil(learned.length/6)*46);
  let seed=7;const r=()=>{seed=(seed*9301+49297)%233280;return seed/233280;};
- const lambs=home.map(i=>{const x=6+r()*80,y=48+r()*(H-140);return`<button class="lamb ${r()>.5?'flip':''}" style="left:${x}%;top:${y}px;animation-delay:-${(r()*2).toFixed(2)}s" data-act="lamb" data-i="${i}" aria-label="Lamb for question ${q.qas[i].n}">${spr('sheep',4)}</button>`;}).join('');
- // lost lambs wait far off in the hills, small and gray, until they're found
- seed=11;const strays=lost.slice(0,14).map(()=>`<span class="stray ${r()>.5?'flip':''}" style="left:${4+r()*88}%;top:${6+r()*34}px">${spr('sheep',2,LOSTG)}</span>`).join('');
- const next=home.map(i=>srsOf(k,i).d).sort((x,y)=>x-y)[0];
- const msg=!learned.length?'Learn your first question to welcome your first lamb!'
-  :lost.length?`<b>${lost.length}</b> lamb${lost.length===1?' has':'s have'} wandered off into the hills! Lambs wander when it's time to review. Find them to bring them home.`
-  :`All <b>${home.length}</b> lamb${home.length===1?' is':'s are'} safe at home. Tap a lamb to practice its question.${next!=null?` A lamb may wander ${daysText(next-today())}.`:''}`;
- return`${hud()}<section class="box"><div class="lbl">YOUR ${esc(q.short.toUpperCase())} FLOCK</div><p style="font-size:19px;margin:0">${msg}</p>
- ${lost.length?`<button class="btn acc" style="width:100%;margin-top:14px" data-act="startHerd">${ic('crook',3,W)} FIND YOUR LOST LAMBS (${lost.length})</button>`:''}</section>
- ${lost.length?`<div class="hills" aria-label="${lost.length} lost lambs in the hills">${strays}</div>`:''}
+ const lambs=learned.map(i=>{const x=6+r()*80,y=48+r()*(H-140);return`<button class="lamb ${r()>.5?'flip':''}" style="left:${x}%;top:${y}px;animation-delay:-${(r()*2).toFixed(2)}s" data-act="lamb" data-i="${i}" aria-label="Lamb for question ${q.qas[i].n}">${spr('sheep',4)}</button>`;}).join('');
+ return`${hud()}<section class="box"><div class="lbl">YOUR ${esc(q.short.toUpperCase())} FLOCK</div><p style="font-size:19px;margin:0">${learned.length?`You have <b>${learned.length}</b> lamb${learned.length===1?'':'s'} — one for every question you've learned. Tap a lamb to review its question!`:'Learn your first question to welcome your first lamb!'}</p></section>
  <div class="pasture" style="height:${H}px"><div class="fence"></div>${lambs}<div class="shep">${heroImg(k,4)}</div></div>
- <section class="box center"><p style="font-size:19px;margin:0">${lost.length?'“What man of you, having an hundred sheep, if he lose one of them, doth not leave the ninety and nine… and go after that which is lost, until he find it?”<br><span class="tiny">Luke 15:4</span>':'“I am the good shepherd.”<br><span class="tiny">John 10:11</span>'}</p></section>`;
-}
-// ----- find the lost lambs: a quick review of the questions that are due -----
-// Right on the first try: the lamb comes home and its next review moves further out.
-// A miss: the lamb gets one more try at the end of the round; if it comes home then, it
-// starts over and wanders again tomorrow. Missed twice, it stays lost for another day's search.
-const HERD_MAX=10;
-function startHerd(){
- const k=kid(),lost=lostIdx(k).slice(0,HERD_MAX);if(!lost.length)return nav({name:'flock'});
- V={name:'herd'};G={queue:lost.map(i=>({i,tries:0})),total:lost.length,found:[],stray:[],pos:0,cur:null,busy:false,done:false};
- loadHerd();render();window.scrollTo(0,0);
-}
-function loadHerd(){
- const it=G.queue[0];G.busy=false;G.miss=false;
- G.cur=N()>=2?makePick(it.i,false):{i:it.i,self:true,show:false,opts:[],wrong:new Set()};
-}
-function herdV(){
- const it=G.queue&&G.queue[0];if(!it||!G.cur)return topBar('flock','FIND YOUR LAMBS');
- const C=G.cur,qa=QAS()[C.i],done=G.found.length,again=it.tries>0;
- const head=`${topBar('flock','FIND YOUR LAMBS')}<div class="gamebar"><span class="round">LAMB ${Math.min(G.pos+1,G.total)}/${G.total}</span><span class="sp"></span><span class="found">${spr('sheep',2)} ${done} HOME</span></div>`;
- const q=`<section class="box dark"><div class="lbl">${again?'ONE MORE TRY · ':''}LAMB #${qa.n}</div><div class="qtext">${esc(qa.q)}</div><div class="row" style="margin-top:12px"><button class="btn sm" data-act="sayHerdQ">${ic('speaker')} HEAR IT</button></div></section>`;
- if(C.self){
-  return`${head}${q}${C.show?`<section class="box"><div class="lbl">ANSWER</div><p style="font-size:20px;margin:0">${esc(qa.a)}</p></section><div class="tip">Did you say it right?</div><div class="row"><button class="btn ok" data-act="herdSelf" data-ok="1">I KNEW IT!</button><button class="btn" data-act="herdSelf" data-ok="0">NOT YET</button></div>`
-   :`<div class="tip">Say the answer out loud, then check.</div><button class="btn pri" style="width:100%" data-act="herdShow">${ic('eye')} CHECK MY ANSWER</button>`}`;
- }
- return`${head}${q}<div class="tip">Pick the right answer to bring this lamb home.</div>
- <div class="opts">${C.opts.map(j=>`<button class="opt long ${C.wrong.has(j)?'bad':''}" data-act="herdPick" data-j="${j}" ${C.wrong.has(j)?'disabled':''}>${esc(shortText(QAS()[j].a,18))}</button>`).join('')}</div>`;
-}
-function herdResult(ok){
- const k=kid(),it=G.queue.shift();G.busy=true;
- if(ok){
-  // home: a first-try answer stretches the gap; a lamb that needed another try starts over
-  srsReview(k,it.i,it.tries===0);G.found.push(it.i);G.pos++;save(k);sfx.coin();
- }else if(it.tries<1){it.tries++;G.queue.push(it);sfx.bad();toast('Almost! This lamb gets one more try.');}
- else{G.stray.push(it.i);G.pos++;sfx.bad();}
- const tok=G;setTimeout(()=>{if(G!==tok||V.name!=='herd')return;if(!G.queue.length)return finishHerd();loadHerd();render();window.scrollTo(0,0);},ok?550:900);
-}
-function finishHerd(){
- if(G.done)return;G.done=true;
- const k=kid(),n=G.found.length,coins=n*3,left=lostIdx(k).filter(i=>!G.stray.includes(i)).length;k.coins+=coins;save(k);
- showModal(`<div class="parade" style="margin:6px 0 10px;flex-wrap:wrap">${G.found.slice(0,8).map(()=>spr('sheep',4)).join('')||spr('sheep',4,LOSTG)}</div>
- <h2>${n===G.total?'ALL FOUND!':n?'LAMBS FOUND!':'KEEP LOOKING!'}</h2>
- <p>${n?`You brought <b>${n}</b> lamb${n===1?'':'s'} home!`:'These lambs are still wandering. Try again soon!'}</p>
- ${n?`<div class="rewards"><div class="rw">${spr('coin',3)} +${coins} COINS</div></div>`:''}
- ${G.stray.length?`<p class="tiny">${G.stray.length} lamb${G.stray.length===1?' is':'s are'} still out there. Practice ${G.stray.length===1?'it':'them'} on the map, or look again later.</p>`:''}
- ${n?'<p style="font-size:16px;color:var(--mut)">“Rejoice with me; for I have found my sheep which was lost.” Luke 15:6</p>':''}
- <div class="col">${left?`<button class="btn acc" data-act="startHerd">FIND ${left} MORE</button>`:''}<button class="btn ok" data-act="go" data-to="flock">BACK TO MY FLOCK</button></div>`);
- if(n){sfx.win();setTimeout(()=>confetti(n===G.total?160:80),150);}
+ <section class="box center"><p style="font-size:19px;margin:0">“I am the good shepherd.”<br><span class="tiny">John 10:11</span></p></section>`;
 }
 function shopV(){
  const k=kid(),h=k.hero,cur=(k.colors[h]||0),owned=k.owned[h]||[0];
@@ -926,9 +750,9 @@ function shopV(){
 }
 function musicV(){
  const k=kid();
- return`${hud()}<section class="box"><div class="lbl">HYMN JUKEBOX</div><p style="font-size:18px;margin:0 0 4px">8-bit versions of classic hymns. Unlock new songs with coins. Your unlocked hymns play on shuffle while you play. Tap one to hear it now.</p></section>
- ${SONGS.map((s,i)=>{const has=k.songs.includes(i),on=MU.on&&MU.k===i;return`<button class="song ${has?'':'lock'} ${on||(!MU.on&&k.song===i)?'on':''}" data-act="song" data-i="${i}"><span class="si">${has?(on?'<span class="eq"><i></i><i></i><i></i><i></i></span>':ic('play',3)):ic('lock',3,LOCKG)}</span><span><div class="st">${esc(s.t.toUpperCase())}</div><div class="sb">${esc(s.tune)} · ${esc(s.by)}</div></span>${has?'':`<span class="pr">${spr('coin',2)}${SONG_COST}</span>`}</button>`;}).join('')}
- <div class="row" style="margin-top:6px"><button class="btn sm" data-act="toggleMusic">${S.music?ic('stop')+' MUSIC OFF':ic('note')+' MUSIC ON'}</button></div>`;
+ return`${hud()}<section class="box"><div class="lbl">HYMN JUKEBOX</div><p style="font-size:18px;margin:0 0 4px">8-bit versions of classic hymns. Unlock new songs with coins — the one you pick plays on your map.</p></section>
+ ${SONGS.map((s,i)=>{const has=k.songs.includes(i),on=MU.on&&MU.k===i;return`<button class="song ${has?'':'lock'} ${k.song===i?'on':''}" data-act="song" data-i="${i}"><span class="si">${has?(on?'<span class="eq"><i></i><i></i><i></i><i></i></span>':'▶'):'🔒'}</span><span><div class="st">${esc(s.t.toUpperCase())}</div><div class="sb">${esc(s.tune)} · ${esc(s.by)}</div></span>${has?'':`<span class="pr">${spr('coin',2)}${SONG_COST}</span>`}</button>`;}).join('')}
+ <div class="row" style="margin-top:6px"><button class="btn sm" data-act="toggleMusic">${S.music?'■ MUSIC OFF':'♪ MUSIC ON'}</button></div>`;
 }
 function settingsV(){
  const k=kid(),q=QD();
@@ -1026,16 +850,7 @@ const A={
   if(j===C.i){sfx.ok();el.classList.add('good');advanceSoon(450);}
   else{G.mistakes++;C.wrong.add(j);sfx.bad();render();shake(document.querySelector(`.opt[data-j="${j}"]`));}
  },
- startHerd:()=>{closeModal();sfx.tap();startHerd();},
- herdPick:el=>{
-  if(G.busy||G.done)return;const C=G.cur,j=+el.dataset.j;
-  if(j===C.i){el.classList.add('good');herdResult(!G.miss);}
-  else{G.miss=true;C.wrong.add(j);sfx.bad();render();shake(document.querySelector(`.opt[data-j="${j}"]`));}
- },
- herdShow:()=>{G.cur.show=true;speak(QAS()[G.cur.i].a);render();},
- herdSelf:el=>{if(G.busy||G.done)return;herdResult(el.dataset.ok==='1');},
- sayHerdQ:()=>speak(QAS()[G.cur.i].q),
- lamb:el=>{const i=+el.dataset.i,it=QAS()[i],r=srsOf(kid(),i);sfx.tap();showModal(`${spr('sheep',6)}<h2>LAMB #${it.n}</h2><p><b>Q${it.n}.</b> ${esc(it.q)}</p><p style="color:var(--mut)">Can you say the answer?${r?`<br><span class="tiny">This lamb may wander ${daysText(r.d-today())}.</span>`:''}</p><div class="col"><button class="btn" data-act="lambAns" data-i="${i}">SHOW ANSWER</button><button class="btn" data-act="closeModal">CLOSE</button></div>`);speak(it.q);},
+ lamb:el=>{const i=+el.dataset.i,it=QAS()[i];sfx.tap();showModal(`${spr('sheep',6)}<h2>LAMB #${it.n}</h2><p><b>Q${it.n}.</b> ${esc(it.q)}</p><p style="color:var(--mut)">Can you say the answer?</p><div class="col"><button class="btn" data-act="lambAns" data-i="${i}">SHOW ANSWER</button><button class="btn" data-act="closeModal">CLOSE</button></div>`);speak(it.q);},
  lambAns:el=>{const it=QAS()[+el.dataset.i];el.outerHTML=`<p style="font-size:20px;text-align:left"><b>${esc(it.a)}</b></p>`;speak(it.a);},
  closeModal:()=>closeModal(),
  setHero:el=>{const k=kid();k.hero=el.dataset.h;save(k);sfx.tap();render();},
@@ -1069,13 +884,13 @@ const A={
  mkDel:el=>{
   const id=el.dataset.id;if(DEL!=='q:'+id){DEL='q:'+id;return render();}
   S.custom=S.custom.filter(c=>c.id!==id);const p=id+':';
-  S.kids.forEach(k=>{let ch=false;[k.prog,k.cps,k.srs].forEach(o=>Object.keys(o).forEach(x=>{if(x.startsWith(p)){delete o[x];ch=true;}}));
+  S.kids.forEach(k=>{let ch=false;[k.prog,k.cps].forEach(o=>Object.keys(o).forEach(x=>{if(x.startsWith(p)){delete o[x];ch=true;}}));
    if(id in k.open){delete k.open[id];ch=true;}if(k.quest===id){k.quest=null;ch=true;}if(ch)save(k);});
   DEL=null;fix();persist();render();toast('Quest deleted');
  },
  resetProg:()=>{
   if(DEL!=='reset'){DEL='reset';return render();}
-  const k=kid(),p=k.quest+':';[k.prog,k.cps,k.srs].forEach(o=>Object.keys(o).forEach(x=>{if(x.startsWith(p))delete o[x];}));
+  const k=kid(),p=k.quest+':';[k.prog,k.cps].forEach(o=>Object.keys(o).forEach(x=>{if(x.startsWith(p))delete o[x];}));
   DEL=null;save(k);render();toast('Progress reset');
  }
 };
@@ -1106,7 +921,7 @@ initCloud();
 // Offline support when installed from a website (not inside Claude, where service workers aren't available).
 try{if(window.top===window&&'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1'))window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}catch(e){}
 // test hook
-window.__CQ={get S(){return S;},MU,SONGS,get V(){return V;},get G(){return G;},A,nodes,curIdx,render,startBonus,startFill,finishLevel,stars,QAS,QD,fix,parseQA,CAT};
+window.__CQ={get S(){return S;},get V(){return V;},get G(){return G;},A,nodes,curIdx,render,startBonus,startFill,finishLevel,stars,QAS,QD,fix,parseQA,CAT};
 })();
 </script>
 </body>
