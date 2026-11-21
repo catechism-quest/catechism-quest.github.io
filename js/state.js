@@ -14,7 +14,7 @@ function syncCustom(){
  QUEST_KEYS=['wsc','hc'].filter(x=>CAT[x]).concat(S.custom.map(c=>c.id));
 }
 const KEY='catechism-quest-app-v1';
-function newKid(name,hero){return{id:uid(),name:name||'Hero',hero:hero||null,quest:null,open:{},colors:{},owned:{},prog:{},cps:{},srs:{},mast:{},guard:{},coins:0,swords:1,songs:[0],song:0,made:Date.now(),at:Date.now()};}
+function newKid(name,hero){return{id:uid(),name:name||'Hero',hero:hero||null,quest:null,open:{},colors:{},owned:{},prog:{},cps:{},srs:{},mast:{},guard:{},ach:{},stats:{found:0},streak:{n:0,best:0,last:0},coins:0,swords:1,songs:[0],song:0,made:Date.now(),at:Date.now()};}
 const clone=x=>JSON.parse(JSON.stringify(x));
 function load(){try{const s=localStorage.getItem(KEY);if(s)return JSON.parse(s);}catch(e){}return null;}
 let S=load()||{v:1,kids:[],kidId:null,sound:true,music:true,dels:[],custom:[]};
@@ -33,7 +33,9 @@ function fix(){
   if(k.hero&&!HEROES[k.hero])k.hero='knight';
   // a quest someone made on another device isn't here; keep the pointer, the app asks for a quest
   if(k.quest&&!CAT[k.quest]&&!/^my_/.test(k.quest))k.quest=null;
-  ['colors','owned','prog','cps','open','srs','mast','guard'].forEach(f=>{if(!k[f]||typeof k[f]!=='object'||Array.isArray(k[f]))k[f]={};});
+  ['colors','owned','prog','cps','open','srs','mast','guard','ach','stats','streak'].forEach(f=>{if(!k[f]||typeof k[f]!=='object'||Array.isArray(k[f]))k[f]={};});
+  // daily streak and lost-lamb count (added with achievements)
+  ['n','best','last'].forEach(f=>{if(typeof k.streak[f]!=='number')k.streak[f]=0;});if(typeof k.stats.found!=='number')k.stats.found=0;
   if(typeof k.coins!=='number')k.coins=0;if(typeof k.swords!=='number')k.swords=1;
   if(!Array.isArray(k.songs))k.songs=[0];if(!k.songs.includes(0))k.songs.unshift(0);
   if(typeof k.song!=='number'||!k.songs.includes(k.song))k.song=0;
@@ -140,4 +142,4 @@ async function initCloud(){
   UNSUB=COL.onSnapshot(s=>{try{applySnap(s);}catch(e){}},e=>{UNSUB=null;const c=e&&e.code;if(c==='invalid_argument'||c==='revoked')goLocal();});
  }catch(e){}
 }
-function safeRender(){if(['title','players','quests','map','flock','shop','music','settings'].includes(V.name))render();}
+function safeRender(){if(['title','players','quests','map','flock','shop','music','settings','badges'].includes(V.name))render();}

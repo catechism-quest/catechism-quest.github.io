@@ -56,9 +56,9 @@ let V={name:'title'},G={},CR={hero:null,name:'',editId:null},DEL=null,started=fa
 function nav(v){V=v;V.scroll=true;DEL=null;closeModal();render();window.scrollTo(0,0);}
 function render(){
  const k=kid();
- if(['map','flock','shop','music','quests','herd'].includes(V.name)&&!(k&&k.hero))V={name:S.kids.length?'players':'title'};
- else if(['map','flock','shop','music','herd'].includes(V.name)&&!QD())V={name:'quests'};
- const f={title:titleV,players:playersV,create:createV,quests:questsV,map:mapV,study:studyV,fill:fillV,bonus:bonusV,herd:herdV,build:buildV,guard:guardV,flock:flockV,shop:shopV,music:musicV,settings:settingsV,maker:makerV}[V.name]||titleV;
+ if(['map','flock','shop','music','quests','herd','badges'].includes(V.name)&&!(k&&k.hero))V={name:S.kids.length?'players':'title'};
+ else if(['map','flock','shop','music','herd','badges'].includes(V.name)&&!QD())V={name:'quests'};
+ const f={title:titleV,players:playersV,create:createV,quests:questsV,map:mapV,study:studyV,fill:fillV,bonus:bonusV,herd:herdV,build:buildV,guard:guardV,flock:flockV,shop:shopV,music:musicV,settings:settingsV,maker:makerV,badges:badgesV}[V.name]||titleV;
  app.innerHTML=f();
  $('#nav').innerHTML=['map','flock','shop','music'].includes(V.name)?navBar():'';
  document.body.classList.toggle('hasnav',!!$('#nav').innerHTML);
@@ -73,7 +73,7 @@ function navBar(){
 }
 function hud(){
  const k=kid(),q=QD();
- return`<div class="hud"><button class="who" data-act="players">${heroImg(k,2)}<span>${esc(k.name)}</span></button>
+ return`<div class="hud"><button class="who" data-act="players">${heroImg(k,2)}<span>${esc(k.name)}</span></button>${streakBtn(k)}
  <button class="ib ${S.music?'':'off'}" data-act="toggleMusic" aria-label="Music">${ic('note',3)}</button><button class="ib" data-act="go" data-to="settings" aria-label="Settings">${ic('gear',3)}</button></div>
  <div class="hud2"><span class="chip">${spr('coin',2)}<b>${k.coins}</b><i>COINS</i></span><span class="chip">${spr('sheep',2)}<b>${sheepCount(k)}</b><i>LAMBS</i></span><span class="chip">${spr('sword',2)}<b>${k.swords}</b><i>SWORDS</i></span></div>
  <button class="qbar" data-act="go" data-to="quests" aria-label="Change quest"><span>${esc(q.short.toUpperCase())}</span><span class="sp"></span><span>${learnedIn(k,k.quest)}/${N()} ${ic('play',2,W)}</span></button>`;

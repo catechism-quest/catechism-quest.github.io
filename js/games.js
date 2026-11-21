@@ -119,11 +119,11 @@ function finishBuild(){
  const k=kid(),i=V.i,key=pkey(k.quest,i),st=starsFor(G.mistakes),prev=k.mast[key]||0,first=!prev;
  if(st>prev)k.mast[key]=st;
  const wasLost=isLost(k,i);if(wasLost)srsReview(k,i,st>=2);
- const coins=first?10:st===3?4:2;k.coins+=coins;save(k);
+ const coins=first?10:st===3?4:2;k.coins+=coins;save(k);const extra=celebrate(k);
  showModal(`<div style="margin:6px 0">${spr('crown',8)}</div><h2>${first?'QUESTION CROWNED!':st===3?'PERFECT BUILD!':'WELL BUILT!'}</h2>
  <div class="bigstars">${[0,1,2].map(n=>`<span class="${n<st?'on':''}">${spr('star',6,n<st?null:STARG)}</span>`).join('')}</div>
  <p>${first?'You built the answer word by word. Look for the crown on the map!':'Every build makes it stick a little better.'}</p>
- <div class="rewards"><div class="rw">${spr('coin',3)} +${coins} COINS</div>${wasLost?`<div class="rw">${spr('sheep',3)} A LOST LAMB CAME HOME!</div>`:''}</div>
+ <div class="rewards"><div class="rw">${spr('coin',3)} +${coins} COINS</div>${wasLost?`<div class="rw">${spr('sheep',3)} A LOST LAMB CAME HOME!</div>`:''}${extra}</div>
  <div class="col"><button class="btn ok" data-act="nextNode">NEXT ${ic('play',2,W)}</button><button class="btn" data-act="startBuild">BUILD AGAIN</button><button class="btn" data-act="go" data-to="map">MAP</button></div>`);
  sfx.win();setTimeout(()=>confetti(st===3?160:80),150);
 }
@@ -160,10 +160,10 @@ function finishGuard(){
  const bar=document.querySelector('.hp i');if(bar)bar.style.width='0%';
  k.guard[key]=1;let coins=first?30:5,song=-1;if(perfect)coins+=10;
  if(first){song=SONGS.findIndex((x,j)=>!k.songs.includes(j));if(song>=0)k.songs.push(song);else coins+=SONG_COST;}
- k.coins+=coins;save(k);
+ k.coins+=coins;save(k);const extra=celebrate(k);
  showModal(`<div style="margin:6px 0">${spr('guardian',5,guardMap(th.c))}</div><h2>${first?'BADGE EARNED!':'WELL FOUGHT!'}</h2>
  <p>The guardian of ${esc(th.n)} salutes you and lets you pass!</p>
- <div class="rewards">${first?`<div class="rw">${spr('shield',3)} ${esc(th.n.toUpperCase())} BADGE</div>`:''}<div class="rw">${spr('coin',3)} +${coins} COINS${perfect?' (PERFECT!)':''}</div>${song>=0?`<div class="rw">${spr('note',2)} NEW HYMN: ${esc(SONGS[song].t.toUpperCase())}</div>`:''}</div>
+ <div class="rewards">${first?`<div class="rw">${spr('shield',3)} ${esc(th.n.toUpperCase())} BADGE</div>`:''}<div class="rw">${spr('coin',3)} +${coins} COINS${perfect?' (PERFECT!)':''}</div>${song>=0?`<div class="rw">${spr('note',2)} NEW HYMN: ${esc(SONGS[song].t.toUpperCase())}</div>`:''}${extra}</div>
  <div class="col"><button class="btn ok" data-act="go" data-to="map">MAP ${ic('play',2,W)}</button>${song>=0?`<button class="btn" data-act="go" data-to="music">${ic('note',2)} JUKEBOX</button>`:''}</div>`);
  sfx.win();setTimeout(()=>confetti(220),150);
 }
@@ -183,21 +183,21 @@ function finishLevel(){
  // a lost lamb's level played on the map counts as its review
  const wasLost=!first&&isLost(k,i);
  if(first)srsSeed(k,i);else if(wasLost)srsReview(k,i,st>=2);
- const coins=first?st*5:st*2;k.coins+=coins;save(k);
+ const coins=first?st*5:st*2;k.coins+=coins;save(k);const extra=celebrate(k);
  showModal(`<h2>${st===3?'PERFECT!':st===2?'GREAT JOB!':'YOU DID IT!'}</h2>
  <div class="bigstars">${[0,1,2].map(n=>`<span class="${n<st?'on':''}">${spr('star',6,n<st?null:STARG)}</span>`).join('')}</div>
  <p>${st<3?'Fewer oops = more stars. Replay anytime to earn 3!':'Every word in the right place!'}</p>
- <div class="rewards"><div class="rw">${spr('coin',3)} +${coins} COINS</div>${first?`<div class="rw">${spr('sheep',3)} A LAMB JOINED YOUR FLOCK!</div>`:wasLost?`<div class="rw">${spr('sheep',3)} A LOST LAMB CAME HOME!</div>`:''}</div>
+ <div class="rewards"><div class="rw">${spr('coin',3)} +${coins} COINS</div>${first?`<div class="rw">${spr('sheep',3)} A LAMB JOINED YOUR FLOCK!</div>`:wasLost?`<div class="rw">${spr('sheep',3)} A LOST LAMB CAME HOME!</div>`:''}${extra}</div>
  <div class="col"><button class="btn ok" data-act="nextNode">NEXT ${ic('play',2,W)}</button><button class="btn acc" data-act="startBuild">${spr('crown',2)} WORD BUILDER</button><button class="btn" data-act="go" data-to="map">MAP</button></div>`);
  sfx.win();setTimeout(()=>confetti(st===3?160:80),150);
 }
 function finishBonus(){
  if(G.done)return;G.done=true;
  const k=kid(),s=V.s,key=ckey(k.quest,s),first=!k.cps[key],perfect=G.mistakes===0;
- k.cps[key]=1;let coins=first?20:5;if(perfect)coins+=10;if(first)k.swords++;k.coins+=coins;save(k);
+ k.cps[key]=1;let coins=first?20:5;if(perfect)coins+=10;if(first)k.swords++;k.coins+=coins;save(k);const extra=celebrate(k);
  showModal(`<div style="margin:6px 0">${spr('castle',6)}</div><h2>CASTLE CLEARED!</h2>
  <p>${perfect?'A perfect bonus round!':'You finished the bonus round!'}</p>
- <div class="rewards"><div class="rw">${spr('coin',3)} +${coins} COINS${perfect?' (PERFECT!)':''}</div>${first?`<div class="rw">${spr('sword',3)} +1 SWORD</div>`:''}</div>
+ <div class="rewards"><div class="rw">${spr('coin',3)} +${coins} COINS${perfect?' (PERFECT!)':''}</div>${first?`<div class="rw">${spr('sword',3)} +1 SWORD</div>`:''}${extra}</div>
  <p class="tiny">Use swords during a game to knock out a wrong answer.</p>
  <div class="col">${first&&landDone(k,s)?`<button class="btn acc" data-act="guard" data-s="${s}">${spr('guardian',2,guardMap(landTheme(s).c))} FACE THE GUARDIAN</button>`:''}<button class="btn ok" data-act="nextNode">NEXT ${ic('play',2,W)}</button><button class="btn" data-act="go" data-to="map">MAP</button></div>`);
  sfx.win();setTimeout(()=>confetti(200),150);
@@ -238,18 +238,18 @@ function herdResult(ok){
  const k=kid(),it=G.queue.shift();G.busy=true;
  if(ok){
   // home: a first-try answer stretches the gap; a lamb that needed another try starts over
-  srsReview(k,it.i,it.tries===0);G.found.push(it.i);G.pos++;save(k);sfx.coin();
+  srsReview(k,it.i,it.tries===0);k.stats.found++;G.found.push(it.i);G.pos++;save(k);sfx.coin();
  }else if(it.tries<1){it.tries++;G.queue.push(it);sfx.bad();toast('Almost! This lamb gets one more try.');}
  else{G.stray.push(it.i);G.pos++;sfx.bad();}
  const tok=G;setTimeout(()=>{if(G!==tok||V.name!=='herd')return;if(!G.queue.length)return finishHerd();loadHerd();render();window.scrollTo(0,0);},ok?550:900);
 }
 function finishHerd(){
  if(G.done)return;G.done=true;
- const k=kid(),n=G.found.length,coins=n*3,left=lostIdx(k).filter(i=>!G.stray.includes(i)).length;k.coins+=coins;save(k);
+ const k=kid(),n=G.found.length,coins=n*3,left=lostIdx(k).filter(i=>!G.stray.includes(i)).length;k.coins+=coins;save(k);const extra=n?celebrate(k):'';
  showModal(`<div class="parade" style="margin:6px 0 10px;flex-wrap:wrap">${G.found.slice(0,8).map(()=>spr('sheep',4)).join('')||spr('sheep',4,LOSTG)}</div>
  <h2>${n===G.total?'ALL FOUND!':n?'LAMBS FOUND!':'KEEP LOOKING!'}</h2>
  <p>${n?`You brought <b>${n}</b> lamb${n===1?'':'s'} home!`:'These lambs are still wandering. Try again soon!'}</p>
- ${n?`<div class="rewards"><div class="rw">${spr('coin',3)} +${coins} COINS</div></div>`:''}
+ ${n?`<div class="rewards"><div class="rw">${spr('coin',3)} +${coins} COINS</div>${extra}</div>`:''}
  ${G.stray.length?`<p class="tiny">${G.stray.length} lamb${G.stray.length===1?' is':'s are'} still out there. Practice ${G.stray.length===1?'it':'them'} on the map, or look again later.</p>`:''}
  ${n?'<p style="font-size:16px;color:var(--mut)">“Rejoice with me; for I have found my sheep which was lost.” Luke 15:6</p>':''}
  <div class="col">${left?`<button class="btn acc" data-act="startHerd">FIND ${left} MORE</button>`:''}<button class="btn ok" data-act="go" data-to="flock">BACK TO MY FLOCK</button></div>`);
