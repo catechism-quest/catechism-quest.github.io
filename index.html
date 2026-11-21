@@ -201,6 +201,18 @@ a{color:var(--pri2)}
 .kin{flex:1;min-width:0;border:4px solid var(--k);padding:8px;font:600 18px 'Pixelify Sans',monospace;color:var(--k)}
 .tog{display:flex;gap:12px;align-items:center;margin-bottom:12px;font-size:19px}.tog input{width:24px;height:24px}
 .toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 14px);transform:translateX(-50%);z-index:40;background:var(--k);color:#fff;font-family:'Press Start 2P',monospace;font-size:10px;line-height:1.5;padding:12px 14px;border:4px solid var(--gold);max-width:90vw;text-align:center}
+.node .crn{position:absolute;top:-12px;right:-12px;pointer-events:none}
+.gbtn{display:flex;align-items:center;gap:10px;margin:10px 0 0;border:4px solid var(--k);background:var(--paper);color:var(--k);padding:6px 12px 6px 6px;font-family:'Press Start 2P',monospace;font-size:9px;line-height:1.5;cursor:pointer;box-shadow:4px 4px 0 var(--k);text-align:left;max-width:100%}
+.gbtn.new{background:#fff4c2;animation:pulse 1s steps(2) infinite}
+.gbtn.won{background:#d4f7e1}
+.arena{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:12px 16px 0;margin:0 0 16px;border:4px solid var(--k);background:linear-gradient(transparent 70%,var(--grass) 70%);box-shadow:6px 6px 0 rgba(27,21,48,.35);position:relative}
+.arena .foe{text-align:center;flex:1}
+.arena .foe img{animation:graze 1.6s steps(2) infinite}
+.arena .foe.hit img{animation:hit .5s steps(5)}
+@keyframes hit{20%,60%{transform:translateX(8px);filter:brightness(3)}40%,80%{transform:translateX(-8px)}}
+.hp{height:16px;border:4px solid var(--k);background:#fff;margin:6px 0 10px}
+.hp i{display:block;height:100%;background:var(--bad);transition:width .4s steps(6)}
+.foename{font-family:'Press Start 2P',monospace;font-size:9px;line-height:1.5;background:var(--k);color:#fff;padding:4px 6px;display:inline-block}
 #fx{position:fixed;inset:0;pointer-events:none;z-index:30;width:100%;height:100%}
 </style>
 </head>
@@ -249,7 +261,10 @@ Object.assign(SPR,{
  cross:["..nn..","..nn..","nnnnnn","nnnnnn","..nn..","..nn..","..nn..",".GggG."],
  tomb:["..bbbb..",".baaaab.","baa..aab","ba....ab","ba....ab","bbbbbbbb"],
  ship:["...w....","...ww...","...www..","...wwww.","...n....","nnnnnnnn",".nnnnnn.","cccccccc"],
- scroll:["nttttttn",".tkkkkt.",".tttttt.",".tkkkkt.",".tttttt.","nttttttn"]
+ scroll:["nttttttn",".tkkkkt.",".tttttt.",".tkkkkt.",".tttttt.","nttttttn"],
+ // the guardian at the end of each land; 'a'/'b' armor takes the land's color
+ guardian:["......kk......k.",".....kyyk....kwk","....kkkkkk...kwk","...kaaaaaak...n.","..kaakkkkaak..n.","..kaakyykaak..n.","..kaaaaaaaak..n.","...kaaaaaak...n.",".kkkbbbbbbkkkkn.","kyyykbbbbkaaakn.","kyrykbbbbkaaakn.","kyyykbbbbkaaakn.",".kyk.kbbk.kkk.n.","....kaak.kaak.n.","....kaak.kaak.n.","....kkkk.kkkk.n."],
+ shield:[".kkkkkk.","kyyyyyyk","kyykkyyk","kykyykyk","kyykkyyk",".kyyyyk.","..kyyk..","...kk..."]
 });
 // Small inline icon; pass {k:'#fff'} as the map on colored buttons.
 const ic=(n,s,m)=>spr(n,s||2,m,'ic');
@@ -355,7 +370,7 @@ function syncCustom(){
  QUEST_KEYS=['wsc','hc'].filter(x=>CAT[x]).concat(S.custom.map(c=>c.id));
 }
 const KEY='catechism-quest-app-v1';
-function newKid(name,hero){return{id:uid(),name:name||'Hero',hero:hero||null,quest:null,open:{},colors:{},owned:{},prog:{},cps:{},srs:{},coins:0,swords:1,songs:[0],song:0,made:Date.now(),at:Date.now()};}
+function newKid(name,hero){return{id:uid(),name:name||'Hero',hero:hero||null,quest:null,open:{},colors:{},owned:{},prog:{},cps:{},srs:{},mast:{},guard:{},coins:0,swords:1,songs:[0],song:0,made:Date.now(),at:Date.now()};}
 const clone=x=>JSON.parse(JSON.stringify(x));
 function load(){try{const s=localStorage.getItem(KEY);if(s)return JSON.parse(s);}catch(e){}return null;}
 let S=load()||{v:1,kids:[],kidId:null,sound:true,music:true,dels:[],custom:[]};
@@ -374,7 +389,7 @@ function fix(){
   if(k.hero&&!HEROES[k.hero])k.hero='knight';
   // a quest someone made on another device isn't here; keep the pointer, the app asks for a quest
   if(k.quest&&!CAT[k.quest]&&!/^my_/.test(k.quest))k.quest=null;
-  ['colors','owned','prog','cps','open','srs'].forEach(f=>{if(!k[f]||typeof k[f]!=='object'||Array.isArray(k[f]))k[f]={};});
+  ['colors','owned','prog','cps','open','srs','mast','guard'].forEach(f=>{if(!k[f]||typeof k[f]!=='object'||Array.isArray(k[f]))k[f]={};});
   if(typeof k.coins!=='number')k.coins=0;if(typeof k.swords!=='number')k.swords=1;
   if(!Array.isArray(k.songs))k.songs=[0];if(!k.songs.includes(0))k.songs.unshift(0);
   if(typeof k.song!=='number'||!k.songs.includes(k.song))k.song=0;
@@ -415,7 +430,7 @@ function srsReview(k,i,ok){const key=pkey(k.quest,i),r=k.srs[key]||{b:0,d:0};
  r.b=ok?Math.min(GAPS.length-1,r.b+1):0;r.d=today()+GAPS[ok?r.b:0];k.srs[key]=r;return r;}
 const daysText=n=>n<=0?'today':n===1?'tomorrow':`in ${n} days`;
 const sheepCount=k=>k.quest?learnedIdx(k).length-lostIdx(k).length:0;
-const inGame=n=>['study','fill','bonus','herd'].includes(n);
+const inGame=n=>['study','fill','bonus','herd','build','guard'].includes(n);
 
 // ----- saving -----
 // This device keeps everything in localStorage. When the page runs inside Claude with the
@@ -626,7 +641,7 @@ function render(){
  const k=kid();
  if(['map','flock','shop','music','quests','herd'].includes(V.name)&&!(k&&k.hero))V={name:S.kids.length?'players':'title'};
  else if(['map','flock','shop','music','herd'].includes(V.name)&&!QD())V={name:'quests'};
- const f={title:titleV,players:playersV,create:createV,quests:questsV,map:mapV,study:studyV,fill:fillV,bonus:bonusV,herd:herdV,flock:flockV,shop:shopV,music:musicV,settings:settingsV,maker:makerV}[V.name]||titleV;
+ const f={title:titleV,players:playersV,create:createV,quests:questsV,map:mapV,study:studyV,fill:fillV,bonus:bonusV,herd:herdV,build:buildV,guard:guardV,flock:flockV,shop:shopV,music:musicV,settings:settingsV,maker:makerV}[V.name]||titleV;
  app.innerHTML=f();
  $('#nav').innerHTML=['map','flock','shop','music'].includes(V.name)?navBar():'';
  // center the current level only when arriving at the map, not on every re-render
@@ -714,10 +729,10 @@ function mapV(){
   const rows=sec.map((nd,j)=>({nd,gi:idx+j,x:nd.t==='c'?50:X[j%4]}));
   const H=rows.length*92,pts=rows.map((r,j)=>`${r.x},${j*92+46}`).join(' ');
   const th=storyFor(s,q.lands.length),sub=(q.id==='hc'?land.name:`Land ${s+1}`)+' · '+th.r;
-  lands+=`<div class="land"><div class="landname" style="background:${th.c}"><span class="emb">${spr(th.e,th.e==='castle'||th.e==='lion'||th.e==='sheep'?2:3,th.m)}</span><span><b>${esc(th.n.toUpperCase())}</b><small>${esc(sub)}</small></span></div><div class="path"><svg viewBox="0 0 100 ${H}" preserveAspectRatio="none" style="height:${H}px"><polyline points="${pts}" fill="none" stroke="#1b1530" stroke-width="6" stroke-dasharray="2 12" vector-effect="non-scaling-stroke" stroke-linecap="square"/></svg>
+  lands+=`<div class="land"><div class="landname" style="background:${th.c}"><span class="emb">${spr(th.e,th.e==='castle'||th.e==='lion'||th.e==='sheep'?2:3,th.m)}</span><span><b>${esc(th.n.toUpperCase())}${k.guard[ckey(q.id,s)]?' '+spr('shield',2):''}</b><small>${esc(sub)}</small></span></div><div class="path"><svg viewBox="0 0 100 ${H}" preserveAspectRatio="none" style="height:${H}px"><polyline points="${pts}" fill="none" stroke="#1b1530" stroke-width="6" stroke-dasharray="2 12" vector-effect="non-scaling-stroke" stroke-linecap="square"/></svg>
   ${rows.map(r=>{const st=isDone(k,r.nd)?'done':r.gi===cur?'cur':open?'':'lock';const me=r.gi===cur?`<span class="me">${heroImg(k,3)}</span>`:'';
-   if(r.nd.t==='q'){const p=stars(k,r.nd.i);return`<div class="nrow"><button class="node ${st}" style="left:${r.x}%" data-act="node" data-g="${r.gi}" aria-label="Question ${q.qas[r.nd.i].n}">${me}<span class="nn">${st==='lock'?spr('lock',3,LOCKG):q.qas[r.nd.i].n}</span><span class="ns">${st==='done'?starRow(p):st==='cur'?'GO!':''}</span></button></div>`;}
-   return`<div class="nrow"><button class="node castle ${st}" style="left:${r.x}%" data-act="node" data-g="${r.gi}" aria-label="Bonus castle">${me}${spr('castle',4,st==='lock'?{a:'#ddd8e8',b:'#b3acc6',r:'#b3acc6'}:null)}<span class="ns">${st==='done'?'CLEAR':'BONUS'}</span></button></div>`;}).join('')}</div></div>`;
+   if(r.nd.t==='q'){const p=stars(k,r.nd.i);const crn=k.mast[pkey(k.quest,r.nd.i)]?`<span class="crn">${spr('crown',3)}</span>`:'';return`<div class="nrow"><button class="node ${st}" style="left:${r.x}%" data-act="node" data-g="${r.gi}" aria-label="Question ${q.qas[r.nd.i].n}${crn?' (crowned)':''}">${me}${crn}<span class="nn">${st==='lock'?spr('lock',3,LOCKG):q.qas[r.nd.i].n}</span><span class="ns">${st==='done'?starRow(p):st==='cur'?'GO!':''}</span></button></div>`;}
+   return`<div class="nrow"><button class="node castle ${st}" style="left:${r.x}%" data-act="node" data-g="${r.gi}" aria-label="Bonus castle">${me}${spr('castle',4,st==='lock'?{a:'#ddd8e8',b:'#b3acc6',r:'#b3acc6'}:null)}<span class="ns">${st==='done'?'CLEAR':'BONUS'}</span></button></div>`;}).join('')}</div>${guardBtn(k,s)}</div>`;
   idx+=sec.length;
  });
  const doneAll=cur>=ns.length;
@@ -734,7 +749,8 @@ function studyV(){
  <section class="box"><div class="lbl">ANSWER</div><div class="words ${w.length>40?'long':''}">${w.map((x,j)=>hidden.has(j)&&!G.peek.has(j)?`<button class="blank" data-act="peek" data-j="${j}" aria-label="hidden word" style="width:${Math.max(2,x.length)*.6}em"></button>`:`<span class="w">${esc(x)}</span>`).join(' ')}</div>${refs}</section>
  <div class="row" style="margin-bottom:14px"><button class="btn sm" data-act="sayA">${ic('speaker')} READ</button><button class="btn sm pri" data-act="hideMore" ${G.level>=4?'disabled':''}>${ic('shut',2,W)} HIDE</button><button class="btn sm" data-act="showAll">${ic('eye')} SHOW</button></div>
  <div class="tip">${tip}</div>
- <button class="btn ok" style="width:100%" data-act="startFill">I'M READY! ${ic('play',2,W)}</button>`;
+ <button class="btn ok" style="width:100%" data-act="startFill">I'M READY! ${ic('play',2,W)}</button>
+ ${stars(kid(),V.i)>0?`<button class="btn acc" style="width:100%;margin-top:12px" data-act="startBuild">${spr('crown',2)} WORD BUILDER</button>`:''}`;
 }
 function startStudy(i){V={name:'study',i};const n=words(QAS()[i].a).length;G={level:0,order:shuffle([...Array(n).keys()]),peek:new Set(),refs:false};render();window.scrollTo(0,0);}
 
@@ -777,10 +793,10 @@ function startFill(i){const k=kid();V={name:'fill',i};G={mistakes:0,F:makeFill(i
  requestAnimationFrame(()=>{const b=document.querySelector('.fb.cur');if(b&&b.getBoundingClientRect().top>innerHeight*.6)b.scrollIntoView({block:'center'});});}
 
 // ----- bonus -----
-// Long answers are built two chunks at a time, starting at a random point, with a few words before it as a cue.
-function makeBuild(i){
- const all=words(QAS()[i].a);let segs=chunk(all),lead=[];
- if(segs.length>2){const s0=Math.floor(Math.random()*(segs.length-1)),start=segs.slice(0,s0).reduce((a,x)=>a+x.length,0);lead=all.slice(Math.max(0,start-4),start);segs=segs.slice(s0,s0+2);}
+// Long answers are built a few chunks at a time (two in the castle), starting at a random point, with a few words before it as a cue.
+function makeBuild(i,max){
+ max=max||2;const all=words(QAS()[i].a);let segs=chunk(all),lead=[];
+ if(segs.length>max){const s0=Math.floor(Math.random()*(segs.length-max+1)),start=segs.slice(0,s0).reduce((a,x)=>a+x.length,0);lead=all.slice(Math.max(0,start-4),start);segs=segs.slice(s0,s0+max);}
  const B={i,segs,lead,seg:0,pos:0,placed:[],tiles:[]};B.tiles=shuffleNew(B.segs[0].map((w,j)=>({w,id:j,used:false})));return B;
 }
 function makePick(i,rev){const n=N(),others=shuffle([...Array(n).keys()].filter(j=>j!==i)).slice(0,Math.min(2,n-1));return{i,rev:!!rev,opts:shuffle([i,...others]),wrong:new Set()};}
@@ -795,26 +811,107 @@ function startBonus(s){
  V={name:'bonus',s};G={rounds,r:0,mistakes:0,cur:null};loadRound();render();window.scrollTo(0,0);
 }
 function loadRound(){const R=G.rounds[G.r];G.busy=false;G.cur=R.type==='build'?makeBuild(R.i):makePick(R.i,R.type==='pickq');}
-function bonusV(){
- const R=G.rounds[G.r],C=G.cur,qa=QAS(),head=`${topBar('map','BONUS CASTLE')}<div class="gamebar"><span class="round">ROUND ${G.r+1}/${G.rounds.length}</span>${heartsHTML(G.mistakes)}<span class="sp"></span>${R.type==='build'?'':swordBtn()}</div>`;
- if(R.type==='build'){
-  const total=C.segs.reduce((a,x)=>a+x.length,0),part=C.lead.length||C.segs.length>1;
-  return`${head}<section class="box dark"><div class="lbl">BUILD THE ANSWER · Q${qa[C.i].n}</div><div class="qtext">${esc(qa[C.i].q)}</div></section>
-  <section class="box"><div class="words">${C.lead.length?`<span class="w" style="color:var(--mut)">… ${esc(C.lead.join(' '))}</span> `:''}${C.placed.map(x=>`<span class="w ok">${esc(x)}</span>`).join(' ')}<span class="cursor"></span></div><div class="bar"><i style="width:${Math.round(C.placed.length/total*100)}%"></i></div></section>
-  <div class="tip">${C.lead.length?'Keep going from the gray words. ':''}Tap the words in order${part?` · part ${C.seg+1} of ${C.segs.length}`:''}</div>
-  <div class="tiles">${C.tiles.map(t=>`<button class="wt ${t.used?'used':''}" data-act="tile" data-id="${t.id}" ${t.used?'disabled':''}>${esc(t.w)}</button>`).join('')}</div>
-  <div class="row"><button class="btn sm gold" data-act="useSword" ${kid().swords>0?'':'disabled'} style="flex:none">${spr('sword',2)} SHOW NEXT ×${kid().swords}</button></div>`;
- }
- if(C.rev){
-  return`${head}<section class="box"><div class="lbl">WHICH QUESTION HAS THIS ANSWER?</div><div class="qtext">${esc(shortText(qa[C.i].a,40))}</div></section>
+function buildBody(C,lbl){
+ const qa=QAS(),k=kid(),total=C.segs.reduce((a,x)=>a+x.length,0),part=C.lead.length||C.segs.length>1;
+ return`<section class="box dark"><div class="lbl">${lbl} · Q${qa[C.i].n}</div><div class="qtext">${esc(qa[C.i].q)}</div></section>
+ <section class="box"><div class="words ${total>40?'long':''}">${C.lead.length?`<span class="w" style="color:var(--mut)">… ${esc(C.lead.join(' '))}</span> `:''}${C.placed.map(x=>`<span class="w ok">${esc(x)}</span>`).join(' ')}<span class="cursor"></span></div><div class="bar"><i style="width:${Math.round(C.placed.length/total*100)}%"></i></div></section>
+ <div class="tip">${C.lead.length?'Keep going from the gray words. ':''}Tap the words in order${part?` · part ${Math.min(C.seg+1,C.segs.length)} of ${C.segs.length}`:''}</div>
+ <div class="tiles">${C.tiles.map(t=>`<button class="wt ${t.used?'used':''}" data-act="tile" data-id="${t.id}" ${t.used?'disabled':''}>${esc(t.w)}</button>`).join('')}</div>
+ <div class="row"><button class="btn sm gold" data-act="useSword" ${k.swords>0?'':'disabled'} style="flex:none">${spr('sword',2)} SHOW NEXT ×${k.swords}</button></div>`;
+}
+function pickBody(C){
+ const qa=QAS();
+ if(C.rev)return`<section class="box"><div class="lbl">WHICH QUESTION HAS THIS ANSWER?</div><div class="qtext">${esc(shortText(qa[C.i].a,40))}</div></section>
   <div class="opts">${C.opts.map(j=>`<button class="opt long ${C.wrong.has(j)?'bad':''}" data-act="pick" data-j="${j}" ${C.wrong.has(j)?'disabled':''}>Q${qa[j].n}. ${esc(qa[j].q)}</button>`).join('')}</div>`;
- }
- return`${head}<section class="box dark"><div class="lbl">PICK THE RIGHT ANSWER · Q${qa[C.i].n}</div><div class="qtext">${esc(qa[C.i].q)}</div><div class="row" style="margin-top:12px"><button class="btn sm" data-act="sayBonusQ">${ic('speaker')} HEAR IT</button></div></section>
+ return`<section class="box dark"><div class="lbl">PICK THE RIGHT ANSWER · Q${qa[C.i].n}</div><div class="qtext">${esc(qa[C.i].q)}</div><div class="row" style="margin-top:12px"><button class="btn sm" data-act="sayBonusQ">${ic('speaker')} HEAR IT</button></div></section>
  <div class="opts">${C.opts.map(j=>`<button class="opt long ${C.wrong.has(j)?'bad':''}" data-act="pick" data-j="${j}" ${C.wrong.has(j)?'disabled':''}>${esc(shortText(qa[j].a,18))}</button>`).join('')}</div>`;
 }
+const roundBody=(R,C)=>R.type==='build'?buildBody(C,'BUILD THE ANSWER'):pickBody(C);
+function bonusV(){
+ const R=G.rounds[G.r];
+ return`${topBar('map','BONUS CASTLE')}<div class="gamebar"><span class="round">ROUND ${G.r+1}/${G.rounds.length}</span>${heartsHTML(G.mistakes)}<span class="sp"></span>${R.type==='build'?'':swordBtn()}</div>${roundBody(R,G.cur)}`;
+}
 // Advance after a short pause; ignores taps in between and does nothing if the player left the round.
-function advanceSoon(ms){G.busy=true;const tok=G;setTimeout(()=>{if(G===tok&&V.name==='bonus')nextRound();},ms);}
-function nextRound(){if(G.done)return;G.r++;if(G.r>=G.rounds.length)return finishBonus();loadRound();render();window.scrollTo(0,0);}
+function advanceSoon(ms){G.busy=true;const tok=G,v=V.name;setTimeout(()=>{if(G!==tok||V.name!==v)return;if(v==='build')finishBuild();else nextRound();},ms);}
+function nextRound(){
+ if(G.done)return;G.r++;
+ if(G.r>=G.rounds.length)return V.name==='guard'?finishGuard():finishBonus();
+ loadRound();if(V.name==='guard'){G.hit=true;sfx.sword();}render();G.hit=false;window.scrollTo(0,0);
+}
+// A wrong tap. In a guardian battle, running out of hearts ends the try (nothing is lost).
+function missed(){
+ G.mistakes++;sfx.bad();
+ if(V.name==='guard'&&G.mistakes>=GUARD_HEARTS){G.busy=true;const tok=G;setTimeout(()=>{if(G===tok&&V.name==='guard')loseGuard();},600);}
+}
+const gameHearts=()=>V.name==='guard'?`<span class="hearts">${[...Array(GUARD_HEARTS).keys()].map(n=>spr('heart',3,n<GUARD_HEARTS-G.mistakes?null:GRAY)).join('')}</span>`:heartsHTML(G.mistakes);
+
+// ----- word builder: build a whole answer from shuffled word tiles -----
+// For a question the kid has already learned. Answers up to four chunks (about 40 words) are built
+// all the way through; longer ones build a four-chunk stretch from a random point. Finishing crowns
+// the question on the map, and a lost lamb's build counts as its review.
+const BUILD_SEGS=4;
+function startBuild(i){V={name:'build',i};G={mistakes:0,cur:makeBuild(i,BUILD_SEGS)};render();window.scrollTo(0,0);}
+function buildV(){return`${topBar('map','WORD BUILDER')}<div class="gamebar">${heartsHTML(G.mistakes)}<span class="sp"></span></div>${buildBody(G.cur,'WORD BUILDER')}`;}
+function finishBuild(){
+ if(G.done)return;G.done=true;
+ const k=kid(),i=V.i,key=pkey(k.quest,i),st=starsFor(G.mistakes),prev=k.mast[key]||0,first=!prev;
+ if(st>prev)k.mast[key]=st;
+ const wasLost=isLost(k,i);if(wasLost)srsReview(k,i,st>=2);
+ const coins=first?10:st===3?4:2;k.coins+=coins;save(k);
+ showModal(`<div style="margin:6px 0">${spr('crown',8)}</div><h2>${first?'QUESTION CROWNED!':st===3?'PERFECT BUILD!':'WELL BUILT!'}</h2>
+ <div class="bigstars">${[0,1,2].map(n=>`<span class="${n<st?'on':''}">${spr('star',6,n<st?null:STARG)}</span>`).join('')}</div>
+ <p>${first?'You built the answer word by word. Look for the crown on the map!':'Every build makes it stick a little better.'}</p>
+ <div class="rewards"><div class="rw">${spr('coin',3)} +${coins} COINS</div>${wasLost?`<div class="rw">${spr('sheep',3)} A LOST LAMB CAME HOME!</div>`:''}</div>
+ <div class="col"><button class="btn ok" data-act="nextNode">NEXT ${ic('play',2,W)}</button><button class="btn" data-act="startBuild">BUILD AGAIN</button><button class="btn" data-act="go" data-to="map">MAP</button></div>`);
+ sfx.win();setTimeout(()=>confetti(st===3?160:80),150);
+}
+
+// ----- land guardians -----
+// Once every level in a land is done, its guardian waits at the end. Each right round knocks off
+// a bit of the guardian's health; five wrong taps and the guardian wins this time (try again, nothing lost).
+// The first win earns the land's badge, coins, and the next locked hymn.
+const GUARD_HEARTS=5,GUARD_MAX=8;
+function mix(a,b,t){const p=x=>[1,3,5].map(i=>parseInt(x.slice(i,i+2),16)),A=p(a),B=p(b);return'#'+A.map((v,i)=>Math.round(v+(B[i]-v)*t).toString(16).padStart(2,'0')).join('');}
+const guardMap=c=>({a:mix(c,'#ffffff',.45),b:c});
+const landTheme=s=>storyFor(s,QD().lands.length);
+const landDone=(k,s)=>nodes().filter(n=>n.s===s).every(n=>isDone(k,n));
+function guardBtn(k,s){
+ if(!landDone(k,s))return'';const th=landTheme(s),won=!!k.guard[ckey(k.quest,s)];
+ return`<button class="gbtn ${won?'won':'new'}" data-act="guard" data-s="${s}">${spr('guardian',3,guardMap(th.c))}<span>${won?`${spr('shield',2)} BADGE EARNED<br><span style="color:var(--mut)">FACE THE GUARDIAN AGAIN</span>`:'THE GUARDIAN AWAITS!<br><span style="color:var(--acc2)">TAP TO FACE THE CHALLENGE</span>'}</span></button>`;
+}
+function startGuard(s){
+ const n=N(),sec=QD().lands[s].qs.map(x=>x-1);
+ let rounds=sec.map(i=>({type:'build',i}));
+ if(n>=2)sec.forEach((i,j)=>rounds.push({type:n>=3&&j%2?'pickq':'pick',i}));
+ rounds=shuffle(rounds).slice(0,GUARD_MAX);
+ while(rounds.length<3)rounds.push({type:n>=2?'pick':'build',i:rnd(sec)});
+ V={name:'guard',s};G={rounds,r:0,mistakes:0,cur:null};loadRound();render();window.scrollTo(0,0);
+}
+function guardV(){
+ const R=G.rounds[G.r],th=landTheme(V.s),hp=G.rounds.length-G.r;
+ return`${topBar('map','GUARDIAN')}<div class="arena"><div style="padding-bottom:8px">${heroImg(kid(),4)}</div><div class="foe ${G.hit?'hit':''}"><span class="foename">${esc(th.n.toUpperCase())}</span><div class="hp" aria-label="Guardian health ${hp} of ${G.rounds.length}"><i style="width:${Math.round(hp/G.rounds.length*100)}%"></i></div>${spr('guardian',5,guardMap(th.c))}</div></div>
+ <div class="gamebar"><span class="round">ROUND ${G.r+1}/${G.rounds.length}</span>${gameHearts()}<span class="sp"></span>${R.type==='build'?'':swordBtn()}</div>${roundBody(R,G.cur)}`;
+}
+function finishGuard(){
+ if(G.done)return;G.done=true;
+ const k=kid(),s=V.s,key=ckey(k.quest,s),first=!k.guard[key],perfect=G.mistakes===0,th=landTheme(s);
+ const bar=document.querySelector('.hp i');if(bar)bar.style.width='0%';
+ k.guard[key]=1;let coins=first?30:5,song=-1;if(perfect)coins+=10;
+ if(first){song=SONGS.findIndex((x,j)=>!k.songs.includes(j));if(song>=0)k.songs.push(song);else coins+=SONG_COST;}
+ k.coins+=coins;save(k);
+ showModal(`<div style="margin:6px 0">${spr('guardian',5,guardMap(th.c))}</div><h2>${first?'BADGE EARNED!':'WELL FOUGHT!'}</h2>
+ <p>The guardian of ${esc(th.n)} salutes you and lets you pass!</p>
+ <div class="rewards">${first?`<div class="rw">${spr('shield',3)} ${esc(th.n.toUpperCase())} BADGE</div>`:''}<div class="rw">${spr('coin',3)} +${coins} COINS${perfect?' (PERFECT!)':''}</div>${song>=0?`<div class="rw">${spr('note',2)} NEW HYMN: ${esc(SONGS[song].t.toUpperCase())}</div>`:''}</div>
+ <div class="col"><button class="btn ok" data-act="go" data-to="map">MAP ${ic('play',2,W)}</button>${song>=0?`<button class="btn" data-act="go" data-to="music">${ic('note',2)} JUKEBOX</button>`:''}</div>`);
+ sfx.win();setTimeout(()=>confetti(220),150);
+}
+function loseGuard(){
+ if(G.done)return;G.done=true;const th=landTheme(V.s);
+ showModal(`<div style="margin:6px 0">${spr('guardian',5,guardMap(th.c))}</div><h2>NOT YET!</h2>
+ <p>The guardian of ${esc(th.n)} is still standing. Practice this land’s questions and try again. You didn’t lose anything!</p>
+ <div class="col"><button class="btn ok" data-act="guardAgain">TRY AGAIN</button><button class="btn" data-act="go" data-to="map">MAP</button></div>`);
+ sfx.lose();
+}
 
 // ----- results -----
 function finishLevel(){
@@ -829,7 +926,7 @@ function finishLevel(){
  <div class="bigstars">${[0,1,2].map(n=>`<span class="${n<st?'on':''}">${spr('star',6,n<st?null:STARG)}</span>`).join('')}</div>
  <p>${st<3?'Fewer oops = more stars. Replay anytime to earn 3!':'Every word in the right place!'}</p>
  <div class="rewards"><div class="rw">${spr('coin',3)} +${coins} COINS</div>${first?`<div class="rw">${spr('sheep',3)} A LAMB JOINED YOUR FLOCK!</div>`:wasLost?`<div class="rw">${spr('sheep',3)} A LOST LAMB CAME HOME!</div>`:''}</div>
- <div class="col"><button class="btn ok" data-act="nextNode">NEXT ${ic('play',2,W)}</button><button class="btn" data-act="go" data-to="map">MAP</button></div>`);
+ <div class="col"><button class="btn ok" data-act="nextNode">NEXT ${ic('play',2,W)}</button><button class="btn acc" data-act="startBuild">${spr('crown',2)} WORD BUILDER</button><button class="btn" data-act="go" data-to="map">MAP</button></div>`);
  sfx.win();setTimeout(()=>confetti(st===3?160:80),150);
 }
 function finishBonus(){
@@ -840,7 +937,7 @@ function finishBonus(){
  <p>${perfect?'A perfect bonus round!':'You finished the bonus round!'}</p>
  <div class="rewards"><div class="rw">${spr('coin',3)} +${coins} COINS${perfect?' (PERFECT!)':''}</div>${first?`<div class="rw">${spr('sword',3)} +1 SWORD</div>`:''}</div>
  <p class="tiny">Use swords during a game to knock out a wrong answer.</p>
- <div class="col"><button class="btn ok" data-act="nextNode">NEXT ${ic('play',2,W)}</button><button class="btn" data-act="go" data-to="map">MAP</button></div>`);
+ <div class="col">${first&&landDone(k,s)?`<button class="btn acc" data-act="guard" data-s="${s}">${spr('guardian',2,guardMap(landTheme(s).c))} FACE THE GUARDIAN</button>`:''}<button class="btn ok" data-act="nextNode">NEXT ${ic('play',2,W)}</button><button class="btn" data-act="go" data-to="map">MAP</button></div>`);
  sfx.win();setTimeout(()=>confetti(200),150);
 }
 function openNode(gi){
@@ -1004,8 +1101,8 @@ const A={
  useSword:()=>{
   const k=kid();if(k.swords<1||G.busy||G.done)return;
   if(V.name==='fill'){const F=G.F,correct=norm(F.w[F.blanks[F.bi]]);const left=F.opts.map((o,j)=>j).filter(j=>!F.wrong.has(j)&&norm(F.opts[j])!==correct);if(!left.length)return toast('Only the right answer is left!');F.wrong.add(rnd(left));}
-  else if(V.name==='bonus'){const C=G.cur;
-   if(G.rounds[G.r].type==='build'){const exp=C.segs[C.seg][C.pos];const t=C.tiles.find(x=>!x.used&&norm(x.w)===norm(exp));if(!t)return;k.swords--;save(k);sfx.sword();render();const b=document.querySelector(`.wt[data-id="${t.id}"]`);if(b)b.classList.add('glow');return;}
+  else if(['bonus','guard','build'].includes(V.name)){const C=G.cur;
+   if(C.segs){const exp=C.segs[C.seg][C.pos];const t=C.tiles.find(x=>!x.used&&norm(x.w)===norm(exp));if(!t)return;k.swords--;save(k);sfx.sword();render();const b=document.querySelector(`.wt[data-id="${t.id}"]`);if(b)b.classList.add('glow');return;}
    const left=C.opts.filter(j=>j!==C.i&&!C.wrong.has(j));if(!left.length)return toast('Only the right answer is left!');C.wrong.add(rnd(left));}
   else return;
   k.swords--;save(k);sfx.sword();render();
@@ -1018,15 +1115,18 @@ const A={
    t.used=true;C.placed.push(exp);C.pos++;sfx.ok();
    if(C.pos>=seg.length){C.seg++;C.pos=0;if(C.seg>=C.segs.length){render();return advanceSoon(500);}C.tiles=shuffleNew(C.segs[C.seg].map((w,j)=>({w,id:j,used:false})));}
    render();
-  }else{G.mistakes++;sfx.bad();shake(el);const hb=document.querySelector('.hearts');if(hb)hb.outerHTML=heartsHTML(G.mistakes);}
+  }else{missed();shake(el);const hb=document.querySelector('.hearts');if(hb)hb.outerHTML=gameHearts();}
  },
  pick:el=>{
   if(G.busy)return;
   const C=G.cur,j=+el.dataset.j;
   if(j===C.i){sfx.ok();el.classList.add('good');advanceSoon(450);}
-  else{G.mistakes++;C.wrong.add(j);sfx.bad();render();shake(document.querySelector(`.opt[data-j="${j}"]`));}
+  else{missed();C.wrong.add(j);render();shake(document.querySelector(`.opt[data-j="${j}"]`));}
  },
  startHerd:()=>{closeModal();sfx.tap();startHerd();},
+ startBuild:()=>{const i=V.i;closeModal();sfx.tap();startBuild(i);},
+ guard:el=>{closeModal();sfx.tap();startGuard(+el.dataset.s);},
+ guardAgain:()=>{closeModal();startGuard(V.s);},
  herdPick:el=>{
   if(G.busy||G.done)return;const C=G.cur,j=+el.dataset.j;
   if(j===C.i){el.classList.add('good');herdResult(!G.miss);}
@@ -1069,13 +1169,13 @@ const A={
  mkDel:el=>{
   const id=el.dataset.id;if(DEL!=='q:'+id){DEL='q:'+id;return render();}
   S.custom=S.custom.filter(c=>c.id!==id);const p=id+':';
-  S.kids.forEach(k=>{let ch=false;[k.prog,k.cps,k.srs].forEach(o=>Object.keys(o).forEach(x=>{if(x.startsWith(p)){delete o[x];ch=true;}}));
+  S.kids.forEach(k=>{let ch=false;[k.prog,k.cps,k.srs,k.mast,k.guard].forEach(o=>Object.keys(o).forEach(x=>{if(x.startsWith(p)){delete o[x];ch=true;}}));
    if(id in k.open){delete k.open[id];ch=true;}if(k.quest===id){k.quest=null;ch=true;}if(ch)save(k);});
   DEL=null;fix();persist();render();toast('Quest deleted');
  },
  resetProg:()=>{
   if(DEL!=='reset'){DEL='reset';return render();}
-  const k=kid(),p=k.quest+':';[k.prog,k.cps,k.srs].forEach(o=>Object.keys(o).forEach(x=>{if(x.startsWith(p))delete o[x];}));
+  const k=kid(),p=k.quest+':';[k.prog,k.cps,k.srs,k.mast,k.guard].forEach(o=>Object.keys(o).forEach(x=>{if(x.startsWith(p))delete o[x];}));
   DEL=null;save(k);render();toast('Progress reset');
  }
 };
@@ -1106,7 +1206,7 @@ initCloud();
 // Offline support when installed from a website (not inside Claude, where service workers aren't available).
 try{if(window.top===window&&'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1'))window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}catch(e){}
 // test hook
-window.__CQ={get S(){return S;},MU,SONGS,get V(){return V;},get G(){return G;},A,nodes,curIdx,render,startBonus,startFill,finishLevel,stars,QAS,QD,fix,parseQA,CAT};
+window.__CQ={get S(){return S;},MU,SONGS,get V(){return V;},get G(){return G;},A,nodes,curIdx,render,startBonus,startFill,finishLevel,startBuild,startGuard,landDone,stars,QAS,QD,fix,parseQA,CAT};
 })();
 </script>
 </body>

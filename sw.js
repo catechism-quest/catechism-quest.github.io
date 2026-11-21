@@ -1,5 +1,5 @@
 // Offline support for the installed app. Bump VERSION whenever any app file changes.
-const VERSION = 'cq-v6';
+const VERSION = 'cq-v7';
 const SHELL = ['./', 'index.html', 'catechisms.js', 'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png', 'icons/apple-touch-icon.png'];
 
