@@ -14,13 +14,18 @@ A pixel-art web app that helps kids memorize the Westminster Shorter Catechism a
   - `state.js`: saved state, progress, spaced repetition and cloud sync.
   - `sound.js`: sound effects, the hymn player, speech and confetti.
   - `rewards.js`: daily streaks, achievements (`ACH`) and the badges screen.
+  - `progress.js`: XP, levels, unlockable heroes/hats/pets (`UNLOCKS`) and the level-up celebration.
   - `views.js`: the map, menus, flock, shop, jukebox and settings.
   - `games.js`: study, fill-in, bonus castle, Word Builder, guardians and lost-lamb review.
+  - `journey.js`: the adventure World Map.
+  - `wb/*.js`: the World Builder (art, catalog, world, sim, engine, ui). See WORLD_BUILDER_PROGRESS.md.
   - `actions.js`: taps and input, then start-up and the `__CQ` test hook.
 
-  A new file must be added to `index.html` in the right place and to `SHELL` in `sw.js`. Don't give a top-level name the same name as a browser global (like `top`, `name` or `status`).
+  New screens and taps plug in through `VIEWS`, `MOUNT`/`UNMOUNT`, `ACT`, `NEED` and `NAVTABS` (in `helpers.js`) instead of editing `views.js`/`actions.js`. A new file must be added to `index.html` in the right place and to `SHELL` in `sw.js`. Don't give a top-level name the same name as a browser global (like `top`, `name` or `status`).
 - `catechisms.js`: catechism texts and the default land splits. **Generated** by `tools/build_data.py`, which is not in this repo, so don't edit it by hand. Change land places and banners in `js/scenes.js` instead (see `SCENES` and `SCENE_META`).
-- `sw.js`: the service worker for offline use when installed. **Bump `VERSION` on every change to any app file**, or installed apps keep the old copy.
+- `sw.js`: the service worker for offline use when installed. **After changing any app file, run `python3 tools/bump_version.py`.** It bumps `VERSION` here and the `?v=` on every script and stylesheet in `index.html`, so browsers never mix old and new files.
+- `tests/`: open `http://localhost:8765/tests/index.html` to run the test suite against the real app code (it uses its own save key). Results are also in `window.__TESTS`.
+- `DEVELOPMENT_CHECKLIST.md` and `WORLD_BUILDER_PROGRESS.md`: phase checklists, architecture notes and known issues.
 - `manifest.webmanifest` and `icons/`: the install-to-home-screen metadata.
 - `tools/musicxml_to_notes.py`: converts a hymn's MusicXML score into a jukebox melody. See the `add-hymn` skill.
 

@@ -16,7 +16,7 @@ const A={
   S.kidId=k.id;save(k);sfx.win();nav({name:k.quest?'map':'quests'});
  },
  pickQuest:el=>{const k=kid();k.quest=el.dataset.q;save(k);sfx.tap();nav({name:'map'});},
- go:el=>{const to=el.dataset.to;nav({name:to,i:V.i});},
+ go:el=>{const to=el.dataset.to;nav({name:to,i:V.i,s:V.s});},
  toggleMusic:()=>{S.music=!S.music;persist();syncMusic();render();},
  install:async()=>{if(!DEFER)return;const d=DEFER;DEFER=null;try{d.prompt();await d.userChoice;}catch(e){}render();},
  node:el=>{
@@ -92,6 +92,19 @@ const A={
   if(k.coins<c.cost){sfx.bad();return toast('Not enough coins yet!');}
   k.coins-=c.cost;owned.push(i);k.colors[h]=i;save(k);sfx.coin();render();toast('New look unlocked!');
  },
+ shopTab:el=>{V.tab=el.dataset.t;sfx.tap();render();},
+ // buy, wear or play an unlockable from the shop
+ shopItem:el=>{
+  const k=kid(),u=unlockById(el.dataset.id);if(!u)return;
+  if(!owns(k,u.id)){
+   if(!u.coins){sfx.bad();shake(el);return toast(`Unlocks at ${unlockReq(u)}`);}
+   if(k.coins<u.coins){sfx.bad();return toast('Not enough coins yet!');}
+   k.coins-=u.coins;k.own[u.id]=today();sfx.coin();toast(`${unlockName(u)} unlocked!`);
+  }else sfx.tap();
+  if(u.kind==='hat')k.hat=u.id;else if(u.kind==='pet')k.pet=u.id;else if(u.kind==='hero')k.hero=u.key;
+  save(k);render();achToast(k);
+ },
+ takeOff:el=>{const k=kid();k[el.dataset.k]=null;save(k);sfx.tap();render();},
  buySword:()=>{const k=kid();if(k.coins<SWORD_COST){sfx.bad();return toast('Not enough coins yet!');}k.coins-=SWORD_COST;k.swords++;save(k);sfx.coin();render();},
  song:el=>{
   const k=kid(),i=+el.dataset.i;
@@ -126,6 +139,7 @@ const A={
   DEL=null;save(k);render();toast('Progress reset');
  }
 };
+Object.assign(A,ACT);
 document.addEventListener('click',e=>{
  const el=e.target.closest('[data-act]');
  if(!el||el.disabled){if(V.name==='title'){A.start();afterGesture();}return;}
@@ -136,6 +150,7 @@ document.addEventListener('change',e=>{
  if(t.matches('.kin')){const k=S.kids.find(x=>x.id===t.dataset.kid);if(k){k.name=t.value.trim()||k.name;save(k);}}
  if(t.id==='snd'){S.sound=t.checked;persist();}
  if(t.id==='mus'){S.music=t.checked;persist();syncMusic();}
+ if(t.id==='creative'){const k=kid();if(k){k.creative=t.checked;save(k);}}
  if(t.id==='openAll'){const k=kid();if(k){k.open[k.quest]=t.checked;save(k);}}
  if(t.name==='mkAns'){MK.ans=t.value;const c=$('#mkCount');if(c)c.textContent=mkCountText();}
 });

@@ -1,6 +1,13 @@
 // Catechism Quest: small helpers and sprite drawing.
 // Loaded as a classic script by index.html; files share top-level names and must load in the order listed there.
 'use strict';
+// Extension points: later files add screens and taps here instead of editing views.js/actions.js.
+// VIEWS[name]() returns a screen's HTML; MOUNT[name]() runs after it's on the page, UNMOUNT[name]() when leaving it;
+// ACT[name](el,e) handles taps on data-act="name" (merged into A in actions.js).
+const VIEWS={},MOUNT={},UNMOUNT={},ACT={};
+// NEED[name] = 'hero' (needs a kid with a hero) or 'quest' (also needs a chosen quest); NAVTABS lists screens that show the bottom bar.
+const NEED={map:'quest',flock:'quest',shop:'quest',music:'quest',herd:'quest',badges:'quest',quests:'hero'};
+const NAVTABS=['map','flock','shop','music'];
 // ================= HELPERS =================
 const SONG_COST=25,SWORD_COST=30;
 const STOP=new Set(['the','and','but','for','with','that','this','are','was','his','her','its','our','who','not','all','has','have','from','into','him','them','they','you','your']);
@@ -28,4 +35,8 @@ function sprURL(name,map){
 }
 function spr(name,scale,map,cls){const w=SPR[name][0].length*(scale||3);return`<img class="spr ${cls||''}" src="${sprURL(name,map)}" width="${w}" alt="" draggable="false">`;}
 const GRAY={r:'#c9c3d6',k:'#8d86a6'};
-function heroImg(k,scale,cls){const h=HEROES[k.hero]?k.hero:'knight';const ci=(k.colors&&k.colors[h])||0;return spr(h,scale,HEROES[h].colors[ci].m,cls);}
+function heroImg(k,scale,cls){const h=HEROES[k.hero]?k.hero:'knight';const ci=(k.colors&&k.colors[h])||0,m=HEROES[h].colors[ci]?HEROES[h].colors[ci].m:{};
+ // with a hat on (progress.js), the hero and hat are drawn as one taller image
+ const hat=k.hat&&typeof unlockById==='function'&&unlockById(k.hat);
+ if(hat&&owns(k,hat.id)&&SPR[hat.key])return`<img class="spr ${cls||''}" src="${heroURL(h,m,hat.key)}" width="${SPR[h][0].length*(scale||3)}" alt="" draggable="false">`;
+ return spr(h,scale,m,cls);}

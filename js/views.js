@@ -52,28 +52,33 @@ function parseQA(t,use){
 const serializeQA=qas=>qas.map((x,i)=>(i+1)+'. '+x.q+'\n'+x.a).join('\n\n');
 
 // ================= VIEWS =================
+let LASTV=null;const REDUCED=(()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){return false;}})();
 let V={name:'title'},G={},CR={hero:null,name:'',editId:null},DEL=null,started=false,MK={id:null,title:'',text:'',ans:'child',back:'quests'};
 function nav(v){V=v;V.scroll=true;DEL=null;closeModal();render();window.scrollTo(0,0);}
 function render(){
  const k=kid();
- if(['map','flock','shop','music','quests','herd','badges'].includes(V.name)&&!(k&&k.hero))V={name:S.kids.length?'players':'title'};
- else if(['map','flock','shop','music','herd','badges'].includes(V.name)&&!QD())V={name:'quests'};
- const f={title:titleV,players:playersV,create:createV,quests:questsV,map:mapV,study:studyV,fill:fillV,bonus:bonusV,herd:herdV,build:buildV,guard:guardV,flock:flockV,shop:shopV,music:musicV,settings:settingsV,maker:makerV,badges:badgesV}[V.name]||titleV;
+ if(NEED[V.name]&&!(k&&k.hero))V={name:S.kids.length?'players':'title'};
+ else if(NEED[V.name]==='quest'&&!QD())V={name:'quests'};
+ const f=Object.assign({title:titleV,players:playersV,create:createV,quests:questsV,map:mapV,study:studyV,fill:fillV,bonus:bonusV,herd:herdV,build:buildV,guard:guardV,flock:flockV,shop:shopV,music:musicV,settings:settingsV,maker:makerV,badges:badgesV},VIEWS)[V.name]||titleV;
+ if(LASTV&&LASTV!==V.name&&UNMOUNT[LASTV])UNMOUNT[LASTV]();
+ const fresh=LASTV!==V.name;LASTV=V.name;
  app.innerHTML=f();
- $('#nav').innerHTML=['map','flock','shop','music'].includes(V.name)?navBar():'';
+ if(fresh&&!REDUCED){app.classList.remove('vin');void app.offsetWidth;app.classList.add('vin');}
+ if(MOUNT[V.name])MOUNT[V.name]();
+ $('#nav').innerHTML=NAVTABS.includes(V.name)?navBar():'';
  document.body.classList.toggle('hasnav',!!$('#nav').innerHTML);
  // center the current level only when arriving at the map, not on every re-render
- if(V.name==='map'&&V.scroll){V.scroll=false;requestAnimationFrame(()=>{const c=document.querySelector('.node.cur');if(c)c.scrollIntoView({block:'center'});pickScene();});}
+ if(V.name==='map'&&V.scroll){V.scroll=false;const to=V.toLand;V.toLand=null;requestAnimationFrame(()=>{const c=to!=null?document.querySelector(`.land[data-s="${to}"]`):document.querySelector('.node.cur');if(c)c.scrollIntoView({block:to!=null?'start':'center'});pickScene();});}
  pickScene();
 }
 function navBar(){
- const it=[['map','MAP',spr('flag',4)],['flock','FLOCK',spr('sheep',3)],['shop','SHOP',spr('coin',4)],['music','MUSIC',spr('note',3,{k:'#ffffff',m:'#ffd23f'})]];
+ const it=[['map','MAP',spr('flag',4)],['flock','FLOCK',spr('sheep',3)],['worlds','BUILD',spr('tree',3)],['shop','SHOP',spr('coin',4)],['music','MUSIC',spr('note',3,{k:'#ffffff',m:'#ffd23f'})]];
  const lost=lostIdx(kid()).length;
  return`<div class="nav">${it.map(x=>`<button class="${V.name===x[0]?'on':''}" data-act="go" data-to="${x[0]}">${x[2]}${x[1]}${x[0]==='flock'&&lost?`<span class="badge" aria-label="${lost} lost">${lost}</span>`:''}</button>`).join('')}</div>`;
 }
 function hud(){
- const k=kid(),q=QD();
- return`<div class="hud"><button class="who" data-act="players">${heroImg(k,2)}<span>${esc(k.name)}</span></button>${streakBtn(k)}
+ const k=kid(),q=QD(),li=levelInfo(k.xp);
+ return`<div class="hud"><button class="who" data-act="players">${heroImg(k,2)}<span class="whon"><span>${esc(k.name)}</span><span class="lvl"><b>LV ${li.L}</b><i><u style="width:${li.pct}%"></u></i></span></span></button>${streakBtn(k)}
  <button class="ib ${S.music?'':'off'}" data-act="toggleMusic" aria-label="Music">${ic('note',3)}</button><button class="ib" data-act="go" data-to="settings" aria-label="Settings">${ic('gear',3)}</button></div>
  <div class="hud2"><span class="chip">${spr('coin',2)}<b>${k.coins}</b><i>COINS</i></span><span class="chip">${spr('sheep',2)}<b>${sheepCount(k)}</b><i>LAMBS</i></span><span class="chip">${spr('sword',2)}<b>${k.swords}</b><i>SWORDS</i></span></div>
  <button class="qbar" data-act="go" data-to="quests" aria-label="Change quest"><span>${esc(q.short.toUpperCase())}</span><span class="sp"></span><span>${learnedIn(k,k.quest)}/${N()} ${ic('play',2,W)}</span></button>`;
@@ -149,13 +154,13 @@ function mapV(){
   const H=rows.length*92,pts=rows.map((r,j)=>`${r.x},${j*92+46}`).join(' ');
   const th=themeOf(q,s),sub=(q.id==='hc'?land.name:`Land ${s+1}`)+' · '+th.r;
   lands+=`<div class="land" data-s="${s}"><div class="landname" style="background:${th.c}"><span class="emb">${spr(th.e,th.e==='castle'||th.e==='lion'||th.e==='sheep'?2:3,th.m)}</span><span><b>${esc(th.n.toUpperCase())}${k.guard[ckey(q.id,s)]?' '+spr('shield',2):''}</b><small>${esc(sub)}</small></span></div><div class="path"><svg viewBox="0 0 100 ${H}" preserveAspectRatio="none" style="height:${H}px"><polyline points="${pts}" fill="none" stroke="#1b1530" stroke-width="6" stroke-dasharray="2 12" vector-effect="non-scaling-stroke" stroke-linecap="square"/></svg>
-  ${rows.map(r=>{const st=isDone(k,r.nd)?'done':r.gi===cur?'cur':open?'':'lock';const me=r.gi===cur?`<span class="me">${heroImg(k,3)}</span>`:'';
+  ${rows.map(r=>{const st=isDone(k,r.nd)?'done':r.gi===cur?'cur':open?'':'lock';const me=r.gi===cur?`<span class="me">${heroImg(k,3)}${petImg(k,2)}</span>`:'';
    if(r.nd.t==='q'){const p=stars(k,r.nd.i);const crn=k.mast[pkey(k.quest,r.nd.i)]?`<span class="crn">${spr('crown',3)}</span>`:'';return`<div class="nrow"><button class="node ${st}" style="left:${r.x}%" data-act="node" data-g="${r.gi}" aria-label="Question ${q.qas[r.nd.i].n}${crn?' (crowned)':''}">${me}${crn}<span class="nn">${st==='lock'?spr('lock',3,LOCKG):q.qas[r.nd.i].n}</span><span class="ns">${st==='done'?starRow(p):st==='cur'?'GO!':''}</span></button></div>`;}
    return`<div class="nrow"><button class="node castle ${st}" style="left:${r.x}%" data-act="node" data-g="${r.gi}" aria-label="Bonus castle">${me}${spr('castle',4,st==='lock'?{a:'#ddd8e8',b:'#b3acc6',r:'#b3acc6'}:null)}<span class="ns">${st==='done'?'CLEAR':'BONUS'}</span></button></div>`;}).join('')}</div>${guardBtn(k,s)}</div>`;
   idx+=sec.length;
  });
  const doneAll=cur>=ns.length;
- return hud()+(doneAll?`<div class="box center"><h2 style="font-size:13px;color:var(--pri2)">QUEST COMPLETE!</h2><p style="font-size:18px">You learned all ${n} questions of the ${esc(q.title)} and walked all the way from the Garden of Eden to the New Jerusalem! Replay any level to earn more stars and coins.</p></div>`:'')+lands;
+ return hud()+`<button class="wmbtn" data-act="go" data-to="journey">${spr('scroll',3)}<span>WORLD MAP</span>${ic('play',2)}</button>`+(doneAll?`<div class="box center"><h2 style="font-size:13px;color:var(--pri2)">QUEST COMPLETE!</h2><p style="font-size:18px">You learned all ${n} questions of the ${esc(q.title)} and walked all the way from the Garden of Eden to the New Jerusalem! Replay any level to earn more stars and coins.</p></div>`:'')+lands;
 }
 
 // ----- flock / shop / music / settings -----
@@ -176,15 +181,31 @@ function flockV(){
  <div class="pasture" style="height:${H}px"><div class="fence"></div>${lambs}<div class="shep">${heroImg(k,4)}</div></div>
  <section class="box center"><p style="font-size:19px;margin:0">${lost.length?'“What man of you, having an hundred sheep, if he lose one of them, doth not leave the ninety and nine… and go after that which is lost, until he find it?”<br><span class="tiny">Luke 15:4</span>':'“I am the good shepherd.”<br><span class="tiny">John 10:11</span>'}</p></section>`;
 }
+// The shop: tabs for heroes, hats, companions, World Builder treasures and power-ups.
+// Everything costs coins earned by learning, or unlocks by level or badge. There's no real money anywhere.
+const SHOP_TABS=[['hero','HEROES','knight'],['hat','HATS','cap'],['pet','PETS','dog'],['wb','WORLD','tree'],['power','POWER','sword']];
+function shopItem(k,u){
+ const has=owns(k,u.id),on=(u.kind==='hat'&&k.hat===u.id)||(u.kind==='pet'&&k.pet===u.id)||(u.kind==='hero'&&k.hero===u.key);
+ const price=has?(on?(u.kind==='hero'?'PLAYING':'WEARING'):u.kind==='hero'?'PLAY':u.kind==='wb'?'IN BUILDER':'WEAR'):u.coins?`${spr('coin',2)} ${u.coins}`:ic('lock',2,LOCKG)+' '+esc(unlockReq(u));
+ return`<button class="item ${on?'on':''} ${has?'':'locked'}" data-act="shopItem" data-id="${u.id}">${unlockIcon(u,u.kind==='hero'?3:4)}<div class="in">${esc(unlockName(u).toUpperCase())}</div><div class="ip">${price}</div></button>`;
+}
 function shopV(){
- const k=kid(),h=k.hero,cur=(k.colors[h]||0),owned=k.owned[h]||[0];
- return`${hud()}<section class="box"><div class="lbl">YOUR HERO</div>
- <div class="hrow">${HERO_KEYS.map(x=>`<button class="${x===h?'on':''}" data-act="setHero" data-h="${x}" aria-label="${HEROES[x].name}">${spr(x,3,HEROES[x].colors[k.colors[x]||0].m)}</button>`).join('')}</div>
- <div class="lbl">${HEROES[h].name.toUpperCase()} COLORS</div>
- <div class="grid3">${HEROES[h].colors.map((c,i)=>{const has=i===0||owned.includes(i);return`<button class="item ${cur===i?'on':''}" data-act="color" data-i="${i}">${spr(h,4,c.m)}<div class="in">${c.n.toUpperCase()}</div><div class="ip">${cur===i?'WEARING':has?'WEAR':spr('coin',2)+' '+c.cost}</div></button>`;}).join('')}</div></section>
- <section class="box"><div class="lbl">POWER-UPS</div>
- <div class="row"><div style="flex:1;font-size:18px">${spr('sword',4)} <b>Sword</b> — knocks out one wrong answer during a game.</div><button class="btn sm gold" style="flex:none" data-act="buySword">${spr('coin',2)} ${SWORD_COST}</button></div></section>
- <p class="tiny center">Earn coins by finishing questions and bonus castles. Replays earn coins too!</p>`;
+ const k=kid(),tab=V.tab||'hero',h=k.hero,cur=(k.colors[h]||0),owned=k.owned[h]||[0];
+ const tabs=`<div class="tabs">${SHOP_TABS.map(t=>`<button class="${tab===t[0]?'on':''}" data-act="shopTab" data-t="${t[0]}">${spr(t[2],2)}<span>${t[1]}</span></button>`).join('')}</div>`;
+ let body='';
+ if(tab==='hero'){
+  body=`<section class="box"><div class="lbl">HEROES</div><div class="grid3">${HERO_KEYS.map(x=>`<button class="item ${x===h?'on':''}" data-act="setHero" data-h="${x}">${spr(x,3,HEROES[x].colors[k.colors[x]||0].m)}<div class="in">${HEROES[x].name.toUpperCase()}</div><div class="ip">${x===h?'PLAYING':'PLAY'}</div></button>`).join('')}${UNLOCKS.filter(u=>u.kind==='hero').map(u=>shopItem(k,u)).join('')}</div></section>
+ <section class="box"><div class="lbl">${HEROES[h].name.toUpperCase()} COLORS</div>
+ <div class="grid3">${HEROES[h].colors.map((c,i)=>{const has=i===0||owned.includes(i);return`<button class="item ${cur===i?'on':''}" data-act="color" data-i="${i}">${spr(h,4,c.m)}<div class="in">${c.n.toUpperCase()}</div><div class="ip">${cur===i?'WEARING':has?'WEAR':spr('coin',2)+' '+c.cost}</div></button>`;}).join('')}</div></section>`;
+ }else if(tab==='power'){
+  body=`<section class="box"><div class="lbl">POWER-UPS</div>
+ <div class="row"><div style="flex:1;font-size:18px">${spr('sword',4)} <b>Sword</b> — knocks out one wrong answer during a game.</div><button class="btn sm gold" style="flex:none" data-act="buySword">${spr('coin',2)} ${SWORD_COST}</button></div></section>`;
+ }else{
+  const list=UNLOCKS.filter(u=>u.kind===tab),free=tab==='hat'?`<button class="item ${!k.hat?'on':''}" data-act="takeOff" data-k="hat">${heroImg(Object.assign({},k,{hat:null}),3)}<div class="in">NO HAT</div><div class="ip">${!k.hat?'WEARING':'WEAR'}</div></button>`:tab==='pet'?`<button class="item ${!k.pet?'on':''}" data-act="takeOff" data-k="pet">${spr('heart',4,GRAY)}<div class="in">NO PET</div><div class="ip">${!k.pet?'CHOSEN':'CHOOSE'}</div></button>`:'';
+  const intro={hat:'Hats show on your hero everywhere.',pet:'Your companion walks beside you on the maps.',wb:'Special treasures for your World Builder worlds. Everything else in the builder is always free!'}[tab];
+  body=`<section class="box"><div class="lbl">${SHOP_TABS.find(t=>t[0]===tab)[1]}</div><p class="tiny" style="margin:0 0 10px">${intro}</p><div class="grid3">${free}${list.map(u=>shopItem(k,u)).join('')}</div></section>`;
+ }
+ return`${hud()}${tabs}${body}<p class="tiny center">Earn coins and XP by learning. Locked things open up as you level up and earn badges.</p>`;
 }
 function musicV(){
  const k=kid();
@@ -201,6 +222,8 @@ function settingsV(){
  ${k&&q?`<section class="box"><div class="lbl">${esc(k.name.toUpperCase())} · ${esc(q.short.toUpperCase())}</div>
  <label class="tog"><input type="checkbox" id="openAll" ${isOpen(k)?'checked':''}> Let ${esc(k.name)} play any level (skip ahead)</label>
  <p class="tiny" style="margin-top:-4px">Handy if your family or church is already partway through the catechism.</p>
+ <label class="tog"><input type="checkbox" id="creative" ${k.creative?'checked':''}> Creative Mode in the World Builder (unlocks every treasure)</label>
+ <p class="tiny" style="margin-top:-4px">Everything else in the builder is always free. Treasures are normally earned by learning.</p>
  <button class="btn sm bad" data-act="resetProg">${DEL==='reset'?'TAP AGAIN TO RESET':'RESET '+esc(k.name.toUpperCase())+'’S '+esc(q.short.toUpperCase())+' PROGRESS'}</button></section>`:''}
  <section class="box"><div class="lbl">MY QUESTS</div>
  ${S.custom.map(c=>`<div class="krow"><span style="flex:1;font-size:18px;overflow-wrap:anywhere">${esc(c.title)} <span class="tiny">(${c.qas.length})</span></span><button class="btn sm" data-act="mkEdit" data-id="${c.id}">EDIT</button><button class="btn sm bad" data-act="mkDel" data-id="${c.id}">${DEL==='q:'+c.id?'SURE?':'DELETE'}</button></div>`).join('')}

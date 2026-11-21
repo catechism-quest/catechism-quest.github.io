@@ -119,7 +119,7 @@ function finishBuild(){
  const k=kid(),i=V.i,key=pkey(k.quest,i),st=starsFor(G.mistakes),prev=k.mast[key]||0,first=!prev;
  if(st>prev)k.mast[key]=st;
  const wasLost=isLost(k,i);if(wasLost)srsReview(k,i,st>=2);
- const coins=first?10:st===3?4:2;k.coins+=coins;save(k);const extra=celebrate(k);
+ const coins=first?10:st===3?4:2;k.coins+=coins;save(k);const extra=celebrate(k,first?XP.buildFirst:XP.buildReplay);
  showModal(`<div style="margin:6px 0">${spr('crown',8)}</div><h2>${first?'QUESTION CROWNED!':st===3?'PERFECT BUILD!':'WELL BUILT!'}</h2>
  <div class="bigstars">${[0,1,2].map(n=>`<span class="${n<st?'on':''}">${spr('star',6,n<st?null:STARG)}</span>`).join('')}</div>
  <p>${first?'You built the answer word by word. Look for the crown on the map!':'Every build makes it stick a little better.'}</p>
@@ -160,7 +160,7 @@ function finishGuard(){
  const bar=document.querySelector('.hp i');if(bar)bar.style.width='0%';
  k.guard[key]=1;let coins=first?30:5,song=-1;if(perfect)coins+=10;
  if(first){song=SONGS.findIndex((x,j)=>!k.songs.includes(j));if(song>=0)k.songs.push(song);else coins+=SONG_COST;}
- k.coins+=coins;save(k);const extra=celebrate(k);
+ k.coins+=coins;save(k);const extra=celebrate(k,first?XP.guardFirst:XP.guardReplay);
  showModal(`<div style="margin:6px 0">${spr('guardian',5,guardMap(th.c))}</div><h2>${first?'BADGE EARNED!':'WELL FOUGHT!'}</h2>
  <p>The guardian of ${esc(th.n)} salutes you and lets you pass!</p>
  <div class="rewards">${first?`<div class="rw">${spr('shield',3)} ${esc(th.n.toUpperCase())} BADGE</div>`:''}<div class="rw">${spr('coin',3)} +${coins} COINS${perfect?' (PERFECT!)':''}</div>${song>=0?`<div class="rw">${spr('note',2)} NEW HYMN: ${esc(SONGS[song].t.toUpperCase())}</div>`:''}${extra}</div>
@@ -183,7 +183,7 @@ function finishLevel(){
  // a lost lamb's level played on the map counts as its review
  const wasLost=!first&&isLost(k,i);
  if(first)srsSeed(k,i);else if(wasLost)srsReview(k,i,st>=2);
- const coins=first?st*5:st*2;k.coins+=coins;save(k);const extra=celebrate(k);
+ const coins=first?st*5:st*2;k.coins+=coins;save(k);const extra=celebrate(k,first?XP.levelFirst+st*XP.levelStar:XP.levelReplay+st);
  showModal(`<h2>${st===3?'PERFECT!':st===2?'GREAT JOB!':'YOU DID IT!'}</h2>
  <div class="bigstars">${[0,1,2].map(n=>`<span class="${n<st?'on':''}">${spr('star',6,n<st?null:STARG)}</span>`).join('')}</div>
  <p>${st<3?'Fewer oops = more stars. Replay anytime to earn 3!':'Every word in the right place!'}</p>
@@ -194,7 +194,7 @@ function finishLevel(){
 function finishBonus(){
  if(G.done)return;G.done=true;
  const k=kid(),s=V.s,key=ckey(k.quest,s),first=!k.cps[key],perfect=G.mistakes===0;
- k.cps[key]=1;let coins=first?20:5;if(perfect)coins+=10;if(first)k.swords++;k.coins+=coins;save(k);const extra=celebrate(k);
+ k.cps[key]=1;let coins=first?20:5;if(perfect)coins+=10;if(first)k.swords++;k.coins+=coins;save(k);const extra=celebrate(k,first?XP.castleFirst:XP.castleReplay);
  showModal(`<div style="margin:6px 0">${spr('castle',6)}</div><h2>CASTLE CLEARED!</h2>
  <p>${perfect?'A perfect bonus round!':'You finished the bonus round!'}</p>
  <div class="rewards"><div class="rw">${spr('coin',3)} +${coins} COINS${perfect?' (PERFECT!)':''}</div>${first?`<div class="rw">${spr('sword',3)} +1 SWORD</div>`:''}${extra}</div>
@@ -245,7 +245,7 @@ function herdResult(ok){
 }
 function finishHerd(){
  if(G.done)return;G.done=true;
- const k=kid(),n=G.found.length,coins=n*3,left=lostIdx(k).filter(i=>!G.stray.includes(i)).length;k.coins+=coins;save(k);const extra=n?celebrate(k):'';
+ const k=kid(),n=G.found.length,coins=n*3,left=lostIdx(k).filter(i=>!G.stray.includes(i)).length;k.coins+=coins;save(k);const extra=n?celebrate(k,n*XP.lamb):'';
  showModal(`<div class="parade" style="margin:6px 0 10px;flex-wrap:wrap">${G.found.slice(0,8).map(()=>spr('sheep',4)).join('')||spr('sheep',4,LOSTG)}</div>
  <h2>${n===G.total?'ALL FOUND!':n?'LAMBS FOUND!':'KEEP LOOKING!'}</h2>
  <p>${n?`You brought <b>${n}</b> lamb${n===1?'':'s'} home!`:'These lambs are still wandering. Try again soon!'}</p>

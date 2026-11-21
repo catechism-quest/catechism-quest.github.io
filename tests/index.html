@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Catechism Quest tests</title>
+<style>body{font:14px/1.4 ui-monospace,monospace;margin:0}#report{position:fixed;inset:0;z-index:99;background:#fff;overflow:auto;padding:12px;white-space:pre-wrap}.pass{color:#1d8f45}.fail{color:#c4002c;font-weight:bold}</style>
+</head>
+<body>
+<!-- The same page elements as index.html; the app runs here with its own test save key. -->
+<div id="scene"><div class="sc"></div><div class="sc"></div></div>
+<div class="clouds"></div><div id="app"></div><div id="nav"></div><div id="modal"></div><div id="toast"></div><canvas id="fx"></canvas>
+<div id="report">Running…</div>
+<script>
+// Load the app's scripts in the same order index.html lists them, then the tests.
+window.CQ_TEST=true;
+try{localStorage.removeItem('catechism-quest-test');}catch(e){}
+(async()=>{
+ const html=await (await fetch('../index.html',{cache:'no-cache'})).text();
+ const srcs=[...html.matchAll(/<script src="([^"]+)"/g)].map(m=>'../'+m[1]);
+ srcs.push('tests.js','report.js');
+ for(const s of srcs){await new Promise((ok,bad)=>{const t=document.createElement('script');t.src=s;t.onload=ok;t.onerror=()=>bad(new Error('could not load '+s));document.body.appendChild(t);});}
+})().catch(e=>{document.getElementById('report').textContent='LOAD ERROR: '+e.message;window.__TESTS={done:true,fail:1,pass:0,errors:[e.message]};});
+</script>
+</body>
+</html>
