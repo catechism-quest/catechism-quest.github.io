@@ -95,7 +95,7 @@ const A={
  buySword:()=>{const k=kid();if(k.coins<SWORD_COST){sfx.bad();return toast('Not enough coins yet!');}k.coins-=SWORD_COST;k.swords++;save(k);sfx.coin();render();},
  song:el=>{
   const k=kid(),i=+el.dataset.i;
-  if(!k.songs.includes(i)){if(k.coins<SONG_COST){sfx.bad();return toast('Not enough coins yet!');}k.coins-=SONG_COST;k.songs.push(i);sfx.coin();toast('Hymn unlocked!');}
+  if(!k.songs.includes(i)){if(k.coins<SONG_COST){sfx.bad();return toast('Not enough coins yet!');}k.coins-=SONG_COST;k.songs.push(i);sfx.coin();toast('Hymn unlocked!');setTimeout(()=>achToast(k),1400);}
   k.song=i;S.music=true;save(k);playSong(i);render();
  },
  delKid:el=>{const id=el.dataset.id;if(DEL!==id){DEL=id;return render();}S.kids=S.kids.filter(k=>k.id!==id);DIRTY.delete(id);if(!S.dels.includes(id))S.dels.push(id);DEL=null;fix();save();if(!kid())return nav({name:S.kids.length?'players':'create'});render();},
@@ -153,4 +153,4 @@ initCloud();
 // Offline support when installed from a website (not inside Claude, where service workers aren't available).
 try{if(window.top===window&&'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1'))window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}catch(e){}
 // test hook
-window.__CQ={get S(){return S;},MU,SONGS,get V(){return V;},get G(){return G;},A,nodes,curIdx,render,startBonus,startFill,finishLevel,startBuild,startGuard,landDone,stars,QAS,QD,fix,parseQA,CAT,SCENES,sceneURL,setScene,pickScene,themeOf};
+window.__CQ={get S(){return S;},MU,SONGS,get V(){return V;},get G(){return G;},A,nodes,curIdx,render,startBonus,startFill,finishLevel,startBuild,startGuard,landDone,stars,QAS,QD,fix,parseQA,CAT,ACH,checkAch,streakNow,SCENES,sceneURL,setScene,pickScene,themeOf};

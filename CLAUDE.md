@@ -13,6 +13,7 @@ A pixel-art web app that helps kids memorize the Westminster Shorter Catechism a
   - `scenes.js`: the painted land backgrounds (`SCENES`, `SCENE_META`).
   - `state.js`: saved state, progress, spaced repetition and cloud sync.
   - `sound.js`: sound effects, the hymn player, speech and confetti.
+  - `rewards.js`: daily streaks, achievements (`ACH`) and the badges screen.
   - `views.js`: the map, menus, flock, shop, jukebox and settings.
   - `games.js`: study, fill-in, bonus castle, Word Builder, guardians and lost-lamb review.
   - `actions.js`: taps and input, then start-up and the `__CQ` test hook.
@@ -44,6 +45,7 @@ A pixel-art web app that helps kids memorize the Westminster Shorter Catechism a
 - **Lands.** `SCENES` is the 27-place journey from the Garden of Eden to the New Jerusalem. Each has a painted background drawn on a tiny canvas, and `SCENE_META` gives its banner reference, emblem and color. `sceneOf(q, s)` maps any quest's lands onto it, and `themeOf(q, s)` gives a land's banner. Westminster has 27 lands, one per place; Heidelberg has 52 Lord's Days.
 - **Word Builder and guardians.** `k.mast["wsc:12"]` crowns a question built in Word Builder (`startBuild`). `k.guard["wsc:L3"]` is a land's guardian badge (`startGuard`), which also unlocks the next locked hymn the first time.
 - **Flock / spaced repetition.** `k.srs["wsc:12"] = {b, d}` holds a step index into `GAPS` (1, 3, 7, 14, 30… days) and a due day. A due lamb is "lost" and appears gray in the hills. The "Find your lost lambs" review (`startHerd` / `herdV`) brings it home. A right answer moves the next review further out. A miss gets one more try; right then, the lamb comes home and its gap starts over. `fix()` migrates older saved data.
+- **Streaks and achievements.** `k.streak = {n, best, last}` counts days in a row with at least one finished game (`celebrate(k)` runs on every results screen). `k.ach[id]` holds the day each achievement in `ACH` was earned; each pays `ACH_COINS`. Only append to `ACH` or add new ids, since saved ids must keep their meaning. Tap the flame in the top bar for the badges screen.
 - **Music.** `SONGS` entries are melodies in `NOTE+OCTAVE:beats` form. Kids' unlocked songs are saved as **positions** in `SONGS`, so only ever append new songs. Unlocked songs play on shuffle (`nextSong`).
 - **Saving.** Everything lives in localStorage. Inside Claude, a `db` capability also syncs each kid as their own document. Keep new kid fields JSON-serializable, and give them defaults in `fix()`.
 - Only public-domain texts and tunes are allowed.

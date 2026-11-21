@@ -38,6 +38,7 @@ Object.assign(SPR,{
  scroll:["nttttttn",".tkkkkt.",".tttttt.",".tkkkkt.",".tttttt.","nttttttn"],
  // the guardian at the end of each land; 'a'/'b' armor takes the land's color
  guardian:["......kk......k.",".....kyyk....kwk","....kkkkkk...kwk","...kaaaaaak...n.","..kaakkkkaak..n.","..kaakyykaak..n.","..kaaaaaaaak..n.","...kaaaaaak...n.",".kkkbbbbbbkkkkn.","kyyykbbbbkaaakn.","kyrykbbbbkaaakn.","kyyykbbbbkaaakn.",".kyk.kbbk.kkk.n.","....kaak.kaak.n.","....kaak.kaak.n.","....kkkk.kkkk.n."],
+ trophy:["..kkkkkkk..","kkkyyyytkkk","k.kyyyytk.k","k.kyyyyyk.k",".kkyyyyykk.","...kyyyk...","....kyk....","....kyk....","...kYYYk...","..kkkkkkk.."],
  shield:[".kkkkkk.","kyyyyyyk","kyykkyyk","kykyykyk","kyykkyyk",".kyyyyk.","..kyyk..","...kk..."]
 });
 // Small inline icon; pass {k:'#fff'} as the map on colored buttons.
