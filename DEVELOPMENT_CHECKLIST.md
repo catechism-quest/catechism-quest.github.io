@@ -23,17 +23,37 @@ This checklist tracks the adventure and progression system and the World Builder
 - [x] New pixel heroes (Shepherd, Gardener, Astronaut, Robot), hats, and companion pets.
 - [x] Composite hero rendering (hero + hat), with the companion shown beside the hero.
 - [x] Shop with tabs (Heroes, Hats, Pets, World, Power-ups); coins only, no real money.
-- [ ] 30+ achievements (20 existing + level, collection and builder achievements). *28 so far: 8 progression achievements added; builder ones come in Phase 5.*
+- [x] 30+ achievements: **37** in all (20 learning + 8 progression + 9 World Builder).
 
 ## Phase 2: Adventure world map
 - [x] Overworld map of all 27 places along a winding road, with emblems, progress and locks.
 - [x] Tap a place: the hero walks there and a card shows its progress, with Go to land / Guardian.
-- [ ] Builder Island on the overworld. *(the button appears once the builder exists: Phase 5)*
+- [x] Builder Island button on the World Map.
 
-## Phase 3: World Builder engine (see WORLD_BUILDER_PROGRESS.md)
+## Phase 3: World Builder engine (details in WORLD_BUILDER_PROGRESS.md)
+- [x] Isometric renderer, terrain baking, camera (pan, pinch, wheel, buttons), depth sorting.
+- [x] Part-based procedural object art with rotation, state and live animated parts.
+- [x] Catalog: 140 objects in 6 categories, with large picture icons.
+- [x] Tools: play, build, friends, paint (3 brushes), roads/paths/rails (auto-joining, bridges), eraser, move/turn/copy/remove, undo/redo.
+
 ## Phase 4: Creatures and behaviors
+- [x] 23 creatures; customizable, nameable villagers.
+- [x] A* pathfinding; routines (visit, play, chat, stroll, sleep at home at night); animals wander and sleep; fish swim; fliers fly.
+- [x] Cars on roads and trains on tracks; boats bob; balloons and UFOs hover.
+- [x] Tap interactions for objects (20 kinds) and creatures (sounds, hearts, bubbles).
+
 ## Phase 5: Worlds, themes, challenges, integration
+- [x] Up to 12 worlds per kid: previews, new (10 themes), copy, delete with confirmation, rename, expand.
+- [x] Autosave into the kid's save (localStorage + cloud sync); `migrateWorld()` for future formats.
+- [x] Day/night cycle, lights, rain and snow, theme ambient effects; photo mode.
+- [x] 14 optional challenges with celebrations, XP and coins; 9 builder achievements.
+- [x] Integration: BUILD tab, Builder Island on the World Map, treasures earned by learning in the shop's WORLD tab, Creative Mode in Settings.
+
 ## Phase 6: Polish, tests, docs
+- [x] 43 automated tests (`tests/index.html`), covering existing features, progression, the world map and the builder.
+- [x] Checked at phone size in the browser: learning flow, results screens, level-up, shop, world map, builder (day/night, every tool and interaction).
+- [x] Docs: this checklist, WORLD_BUILDER_PROGRESS.md, CLAUDE.md.
 
 ## Known issues
-- None yet.
+- See WORLD_BUILDER_PROGRESS.md for builder-specific notes.
+- Sounds were added with the app's existing tone generator. Nobody has listened to them yet.

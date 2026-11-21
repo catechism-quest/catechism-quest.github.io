@@ -1,5 +1,5 @@
 // Offline support for the installed app. Bump VERSION whenever any app file changes.
-const VERSION = 'cq-v19';
+const VERSION = 'cq-v20';
 const SHELL = ['./', 'index.html', 'catechisms.js', 'manifest.webmanifest', 'css/style.css',
   'js/sprites.js', 'js/songs.js', 'js/helpers.js', 'js/scenes.js', 'js/state.js', 'js/sound.js', 'js/rewards.js', 'js/progress.js', 'js/views.js', 'js/games.js', 'js/journey.js', 'js/wb/art.js', 'js/wb/catalog.js', 'js/wb/world.js', 'js/wb/sim.js', 'js/wb/engine.js', 'js/wb/ui.js', 'js/actions.js',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png', 'icons/apple-touch-icon.png'];
