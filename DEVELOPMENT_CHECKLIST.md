@@ -26,9 +26,9 @@ This checklist tracks the adventure and progression system and the World Builder
 - [ ] 30+ achievements (20 existing + level, collection and builder achievements). *28 so far: 8 progression achievements added; builder ones come in Phase 5.*
 
 ## Phase 2: Adventure world map
-- [ ] Overworld map of all 27 places along a winding road, with emblems, progress and locks.
-- [ ] Tap a place: the hero walks there and a card shows its progress, with Go to land / Guardian.
-- [ ] Builder Island on the overworld.
+- [x] Overworld map of all 27 places along a winding road, with emblems, progress and locks.
+- [x] Tap a place: the hero walks there and a card shows its progress, with Go to land / Guardian.
+- [ ] Builder Island on the overworld. *(the button appears once the builder exists: Phase 5)*
 
 ## Phase 3: World Builder engine (see WORLD_BUILDER_PROGRESS.md)
 ## Phase 4: Creatures and behaviors

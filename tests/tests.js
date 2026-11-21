@@ -32,3 +32,7 @@ test('hat composite renders',()=>{const k=testKid({own:{'hat:cap':1},hat:'hat:ca
 test('fix() drops a hat the kid does not own',()=>{const k=testKid({hat:'hat:crown',pet:'pet:dog'});S.kids.push(k);fix();eq(k.hat,null);eq(k.pet,null);S.kids=S.kids.filter(x=>x!==k);});
 test('old kids get estimated XP',()=>{const old={id:'o2',name:'Old',hero:'knight',quest:'wsc',prog:{'wsc:1':3,'wsc:2':3},cps:{'wsc:L1':1}};S.kids.push(old);fix();ok(old.xp===2*25+40,'xp '+old.xp);S.kids=S.kids.filter(x=>x!==old);});
 test('at least 28 achievements so far',()=>ok(ACH.length>=28,String(ACH.length)));
+
+// ---------- adventure world map ----------
+test('every land belongs to exactly one place',()=>{['wsc','hc'].forEach(id=>{const q=CAT[id],seen=[];SCENES.forEach((s,p)=>placeLands(q,p).forEach(l=>seen.push(l)));eq(seen.sort((a,b)=>a-b),q.lands.map((l,i)=>i),id);});});
+test('world map renders and locks unreached places',()=>{const k=testKid({prog:{'wsc:1':3}});S.kids.push(k);fix();S.kidId=k.id;V={name:'journey'};render();ok(document.querySelectorAll('.jn').length===27);ok(document.querySelectorAll('.jn.lock').length>=25);ok(placeReached(k,CAT.wsc,0));ok(!placeReached(k,CAT.wsc,5));S.kids=S.kids.filter(x=>x!==k);S.kidId=null;V={name:'title'};render();});

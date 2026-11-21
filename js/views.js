@@ -68,7 +68,7 @@ function render(){
  $('#nav').innerHTML=NAVTABS.includes(V.name)?navBar():'';
  document.body.classList.toggle('hasnav',!!$('#nav').innerHTML);
  // center the current level only when arriving at the map, not on every re-render
- if(V.name==='map'&&V.scroll){V.scroll=false;requestAnimationFrame(()=>{const c=document.querySelector('.node.cur');if(c)c.scrollIntoView({block:'center'});pickScene();});}
+ if(V.name==='map'&&V.scroll){V.scroll=false;const to=V.toLand;V.toLand=null;requestAnimationFrame(()=>{const c=to!=null?document.querySelector(`.land[data-s="${to}"]`):document.querySelector('.node.cur');if(c)c.scrollIntoView({block:to!=null?'start':'center'});pickScene();});}
  pickScene();
 }
 function navBar(){
@@ -160,7 +160,7 @@ function mapV(){
   idx+=sec.length;
  });
  const doneAll=cur>=ns.length;
- return hud()+(doneAll?`<div class="box center"><h2 style="font-size:13px;color:var(--pri2)">QUEST COMPLETE!</h2><p style="font-size:18px">You learned all ${n} questions of the ${esc(q.title)} and walked all the way from the Garden of Eden to the New Jerusalem! Replay any level to earn more stars and coins.</p></div>`:'')+lands;
+ return hud()+`<button class="wmbtn" data-act="go" data-to="journey">${spr('scroll',3)}<span>WORLD MAP</span>${ic('play',2)}</button>`+(doneAll?`<div class="box center"><h2 style="font-size:13px;color:var(--pri2)">QUEST COMPLETE!</h2><p style="font-size:18px">You learned all ${n} questions of the ${esc(q.title)} and walked all the way from the Garden of Eden to the New Jerusalem! Replay any level to earn more stars and coins.</p></div>`:'')+lands;
 }
 
 // ----- flock / shop / music / settings -----

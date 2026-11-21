@@ -243,6 +243,25 @@ a{color:var(--pri2)}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes fadein{from{opacity:0}}
 @media (prefers-reduced-motion:reduce){.lvbox .rays,.lvhero,.xpb i{animation:none}}
+/* adventure world map */
+.wmbtn{display:flex;align-items:center;gap:10px;width:100%;margin:0 0 6px;border:4px solid var(--k);background:var(--gold);color:var(--k);padding:6px 12px 6px 8px;font-family:'Press Start 2P',monospace;font-size:11px;cursor:pointer;box-shadow:4px 4px 0 var(--k)}
+.wmbtn span{flex:1;text-align:left}
+.jmap{position:relative;margin:6px -12px 0;border-top:4px solid var(--k);border-bottom:4px solid var(--k);overflow:hidden;
+ background-color:#3d9ae6;background-image:radial-gradient(rgba(255,255,255,.3) 2px,transparent 3px),linear-gradient(#5ec4ff,#2a7ad0);background-size:28px 22px,100% 100%}
+.jmap svg{position:absolute;left:0;top:0;width:100%;pointer-events:none}
+.jn{position:absolute;width:96px;height:96px;margin:-48px 0 0 -48px;border:4px solid var(--k);background:var(--grass);padding:0;cursor:pointer;box-shadow:5px 5px 0 rgba(27,21,48,.45);font:inherit;color:var(--k)}
+.jn .jimg{position:absolute;inset:0;background-size:cover;background-position:center 70%;image-rendering:pixelated}
+.jn .jemb{position:absolute;left:-10px;top:-10px;width:30px;height:30px;border:3px solid var(--k);display:grid;place-items:center}
+.jn .jlock{position:absolute;inset:0;display:grid;place-items:center;background:rgba(201,195,214,.75)}
+.jn.lock{border-color:#7d7698}
+.jn .jname{position:absolute;left:50%;bottom:-24px;transform:translateX(-50%);white-space:nowrap;font-family:'Press Start 2P',monospace;font-size:7px;background:var(--k);color:#fff;padding:4px 5px}
+.jn .jprog{position:absolute;right:-8px;bottom:6px;font-family:'Press Start 2P',monospace;font-size:7px;background:#fff;border:3px solid var(--k);padding:2px 3px;display:flex;align-items:center;gap:3px}
+.jn.done{outline:4px solid var(--gold);outline-offset:2px}
+.jn.seen:not(.lock)::after{content:'';position:absolute;right:4px;top:4px;width:8px;height:8px;background:var(--gold);border:2px solid var(--k)}
+.jhero{position:absolute;transform:translateX(-50%);z-index:3;pointer-events:none;display:flex;align-items:flex-end;gap:2px;transition:left .6s steps(8),top .6s steps(8)}
+.jhero.walk{animation:hop .3s steps(2) infinite}
+.jcard{height:120px;margin:-20px -20px 10px;background-size:cover;background-position:center 70%;image-rendering:pixelated;border-bottom:4px solid var(--k)}
+@media (prefers-reduced-motion:reduce){.jhero{transition:none}}
 /* screen transitions */
 #app.vin{animation:vin .28s steps(6) both}
 @keyframes vin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}

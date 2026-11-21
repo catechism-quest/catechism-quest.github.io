@@ -16,7 +16,7 @@ const A={
   S.kidId=k.id;save(k);sfx.win();nav({name:k.quest?'map':'quests'});
  },
  pickQuest:el=>{const k=kid();k.quest=el.dataset.q;save(k);sfx.tap();nav({name:'map'});},
- go:el=>{const to=el.dataset.to;nav({name:to,i:V.i});},
+ go:el=>{const to=el.dataset.to;nav({name:to,i:V.i,s:V.s});},
  toggleMusic:()=>{S.music=!S.music;persist();syncMusic();render();},
  install:async()=>{if(!DEFER)return;const d=DEFER;DEFER=null;try{d.prompt();await d.userChoice;}catch(e){}render();},
  node:el=>{
