@@ -1,11 +1,11 @@
 ---
 name: add-hymn
-description: Add a public-domain hymn to the Catechism Quest jukebox (the SONGS list in index.html). Use when the user asks to add, include or put in a hymn, hymn tune or song for the app's music. Gets the real melody from a Hymnary.org MusicXML file with tools/musicxml_to_notes.py instead of writing notes from memory.
+description: Add a public-domain hymn to the Catechism Quest jukebox (the SONGS list in js/songs.js). Use when the user asks to add, include or put in a hymn, hymn tune or song for the app's music. Gets the real melody from a Hymnary.org MusicXML file with tools/musicxml_to_notes.py instead of writing notes from memory.
 ---
 
 # Add a hymn to the jukebox
 
-The jukebox plays an 8-bit melody for each entry in `SONGS` in `index.html`. Kids unlock hymns with coins, and unlocked hymns play on shuffle. A melody written from memory is usually wrong somewhere, so **every note must come from a score file**, read by the converter script. Never type or "fix" notes by ear, except where the score itself is clearly misread and the user agrees.
+The jukebox plays an 8-bit melody for each entry in `SONGS` in `js/songs.js`. Kids unlock hymns with coins, and unlocked hymns play on shuffle. A melody written from memory is usually wrong somewhere, so **every note must come from a score file**, read by the converter script. Never type or "fix" notes by ear, except where the score itself is clearly misread and the user agrees.
 
 ## 1. Confirm it's public domain
 
@@ -49,7 +49,7 @@ If two different scores give the same melody, you can be confident in it.
 
 ## 5. Add it to SONGS
 
-In `index.html`, find `const SONGS=[` and **append** the new entry at the end of the list. Never insert in the middle or reorder: kids' unlocked songs are saved as list positions, so moving entries would change what they own.
+In `js/songs.js`, find `const SONGS=[` and **append** the new entry at the end of the list. Never insert in the middle or reorder: kids' unlocked songs are saved as list positions, so moving entries would change what they own.
 
 Paste the line the script printed and fill it in:
 
