@@ -35,4 +35,8 @@ function sprURL(name,map){
 }
 function spr(name,scale,map,cls){const w=SPR[name][0].length*(scale||3);return`<img class="spr ${cls||''}" src="${sprURL(name,map)}" width="${w}" alt="" draggable="false">`;}
 const GRAY={r:'#c9c3d6',k:'#8d86a6'};
-function heroImg(k,scale,cls){const h=HEROES[k.hero]?k.hero:'knight';const ci=(k.colors&&k.colors[h])||0;return spr(h,scale,HEROES[h].colors[ci].m,cls);}
+function heroImg(k,scale,cls){const h=HEROES[k.hero]?k.hero:'knight';const ci=(k.colors&&k.colors[h])||0,m=HEROES[h].colors[ci]?HEROES[h].colors[ci].m:{};
+ // with a hat on (progress.js), the hero and hat are drawn as one taller image
+ const hat=k.hat&&typeof unlockById==='function'&&unlockById(k.hat);
+ if(hat&&owns(k,hat.id)&&SPR[hat.key])return`<img class="spr ${cls||''}" src="${heroURL(h,m,hat.key)}" width="${SPR[h][0].length*(scale||3)}" alt="" draggable="false">`;
+ return spr(h,scale,m,cls);}

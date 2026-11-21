@@ -50,14 +50,15 @@ function checkAch(k){
 const rwRow=(icon,text)=>`<div class="rw">${icon} ${esc(text)}</div>`;
 // Call after a game's own rewards are added: counts today toward the streak, checks achievements,
 // saves, and returns extra reward rows for the results screen.
-function celebrate(k){
- let h='';
+function celebrate(k,xp){
+ let h=xp?gainXP(k,xp):'';
  if(bumpStreak(k)){const n=k.streak.n;h+=rwRow(spr('fire',3),n===1?'DAY 1 STREAK!':`${n}-DAY STREAK!`);}
  checkAch(k).forEach(a=>{h+=rwRow(spr('trophy',3),`${a.n.toUpperCase()} +${ACH_COINS}`);});
+ grantUnlocks(k).forEach(u=>{h+=rwRow(unlockIcon(u,2),`NEW ${u.kind.toUpperCase()}: ${unlockName(u).toUpperCase()}`);});
  save(k);return h;
 }
 // For rewards earned outside a game (like buying a hymn): a toast instead of rows.
-function achToast(k){const n=checkAch(k);if(n.length){save(k);toast(`${spr('trophy',2)} ${n.map(a=>esc(a.n.toUpperCase())).join(' · ')} +${ACH_COINS*n.length}`);sfx.win();}}
+function achToast(k){const n=checkAch(k);grantUnlocks(k);if(n.length){save(k);toast(`${spr('trophy',2)} ${n.map(a=>esc(a.n.toUpperCase())).join(' · ')} +${ACH_COINS*n.length}`);sfx.win();}}
 
 // ----- badges screen -----
 function streakBtn(k){const n=streakNow(k);return`<button class="stk ${n?'':'off'}" data-act="go" data-to="badges" aria-label="${n}-day streak. Badges">${spr('fire',3,n?null:GRAYFIRE)}<b>${n}</b></button>`;}

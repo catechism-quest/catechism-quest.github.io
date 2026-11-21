@@ -1,7 +1,7 @@
 // Offline support for the installed app. Bump VERSION whenever any app file changes.
-const VERSION = 'cq-v11';
+const VERSION = 'cq-v12';
 const SHELL = ['./', 'index.html', 'catechisms.js', 'manifest.webmanifest', 'css/style.css',
-  'js/sprites.js', 'js/songs.js', 'js/helpers.js', 'js/scenes.js', 'js/state.js', 'js/sound.js', 'js/rewards.js', 'js/views.js', 'js/games.js', 'js/actions.js',
+  'js/sprites.js', 'js/songs.js', 'js/helpers.js', 'js/scenes.js', 'js/state.js', 'js/sound.js', 'js/rewards.js', 'js/progress.js', 'js/views.js', 'js/games.js', 'js/actions.js',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png', 'icons/apple-touch-icon.png'];
 
 self.addEventListener('install', e => {

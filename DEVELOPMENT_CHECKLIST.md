@@ -17,13 +17,13 @@ This checklist tracks the adventure and progression system and the World Builder
 - [x] Test runner: `tests/index.html` loads the app's real scripts with a separate save key, and `tests/tests.js` holds the tests.
 
 ## Phase 1: Progression
-- [ ] XP from every learning activity and builder challenge; a level curve up to level 50.
-- [ ] Level badge and XP bar in the top bar; a level-up celebration overlay.
-- [ ] `UNLOCKS` config: heroes, hats and companions, unlocked by level, achievement or coins.
-- [ ] New pixel heroes (Shepherd, Gardener, Astronaut, Robot), hats, and companion pets.
-- [ ] Composite hero rendering (hero + hat), with the companion shown beside the hero.
-- [ ] Shop with tabs (Heroes, Hats, Pets, World, Power-ups); coins only, no real money.
-- [ ] 30+ achievements (20 existing + level, collection and builder achievements).
+- [x] XP from every learning activity and builder challenge; a level curve up to level 50.
+- [x] Level badge and XP bar in the top bar; a level-up celebration overlay.
+- [x] `UNLOCKS` config: heroes, hats and companions, unlocked by level, achievement or coins.
+- [x] New pixel heroes (Shepherd, Gardener, Astronaut, Robot), hats, and companion pets.
+- [x] Composite hero rendering (hero + hat), with the companion shown beside the hero.
+- [x] Shop with tabs (Heroes, Hats, Pets, World, Power-ups); coins only, no real money.
+- [ ] 30+ achievements (20 existing + level, collection and builder achievements). *28 so far: 8 progression achievements added; builder ones come in Phase 5.*
 
 ## Phase 2: Adventure world map
 - [ ] Overworld map of all 27 places along a winding road, with emblems, progress and locks.

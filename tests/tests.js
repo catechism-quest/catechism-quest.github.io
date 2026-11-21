@@ -20,3 +20,15 @@ test('streak counts days in a row once per day',()=>{const k=testKid();k.streak=
 test('achievements pay once',()=>{const k=testKid({prog:{'wsc:1':1}});const c=k.coins;const a=checkAch(k);ok(a.some(x=>x.id==='lamb1'));eq(k.coins,c+ACH_COINS*a.length);eq(checkAch(k).length,0);});
 test('achievement ids are unique',()=>{const ids=ACH.map(a=>a.id);eq(new Set(ids).size,ids.length);});
 test('every screen renders for a test kid',()=>{const k=testKid({prog:{'wsc:1':3}});S.kids.push(k);fix();S.kidId=k.id;['map','flock','shop','music','settings','badges','quests','players'].forEach(n=>{V={name:n};render();ok(app.innerHTML.length>100,n);});S.kids=S.kids.filter(x=>x!==k);S.kidId=null;V={name:'title'};render();});
+
+// ---------- progression ----------
+test('level curve is increasing and capped',()=>{eq(levelOf(0),1);eq(levelOf(49),1);eq(levelOf(50),2);eq(levelOf(xpAt(10)),10);eq(levelOf(1e9),MAX_LEVEL);for(let L=1;L<MAX_LEVEL;L++)ok(xpAt(L+1)>xpAt(L));});
+test('gainXP levels up and grants level unlocks',()=>{const k=testKid();const h=gainXP(k,xpAt(3));ok(/LEVEL UP/.test(h));eq(levelOf(k.xp),3);ok(k.own['hero:shepherd']&&k.own['hat:cap']);clearTimeout(levelUpFx.t);ACT.closeLv();});
+test('coin unlocks are never granted for free',()=>{const k=testKid({xp:xpAt(50)});grantUnlocks(k);ok(!k.own['hero:gardener']&&!k.own['pet:dog']);});
+test('achievement unlocks follow the badge',()=>{const k=testKid();k.ach.guard1=dayNow;grantUnlocks(k);ok(k.own['hero:robot']);});
+test('every unlock points at real art and a valid rule',()=>{const ids=new Set();UNLOCKS.forEach(u=>{ok(!ids.has(u.id),'dup '+u.id);ids.add(u.id);ok(SPR[u.key],u.id+' art');ok(u.free||u.lv||u.ach||u.coins,u.id+' rule');if(u.ach)ok(ACH.find(a=>a.id===u.ach),u.id+' ach');});});
+test('every hero has a hat spot',()=>{Object.keys(HEROES).forEach(h=>ok(HAT_AT[h],h));});
+test('hat composite renders',()=>{const k=testKid({own:{'hat:cap':1},hat:'hat:cap'});const h=heroImg(k,3);ok(/data:image\/png/.test(h));});
+test('fix() drops a hat the kid does not own',()=>{const k=testKid({hat:'hat:crown',pet:'pet:dog'});S.kids.push(k);fix();eq(k.hat,null);eq(k.pet,null);S.kids=S.kids.filter(x=>x!==k);});
+test('old kids get estimated XP',()=>{const old={id:'o2',name:'Old',hero:'knight',quest:'wsc',prog:{'wsc:1':3,'wsc:2':3},cps:{'wsc:L1':1}};S.kids.push(old);fix();ok(old.xp===2*25+40,'xp '+old.xp);S.kids=S.kids.filter(x=>x!==old);});
+test('at least 28 achievements so far',()=>ok(ACH.length>=28,String(ACH.length)));

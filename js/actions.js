@@ -92,6 +92,19 @@ const A={
   if(k.coins<c.cost){sfx.bad();return toast('Not enough coins yet!');}
   k.coins-=c.cost;owned.push(i);k.colors[h]=i;save(k);sfx.coin();render();toast('New look unlocked!');
  },
+ shopTab:el=>{V.tab=el.dataset.t;sfx.tap();render();},
+ // buy, wear or play an unlockable from the shop
+ shopItem:el=>{
+  const k=kid(),u=unlockById(el.dataset.id);if(!u)return;
+  if(!owns(k,u.id)){
+   if(!u.coins){sfx.bad();shake(el);return toast(`Unlocks at ${unlockReq(u)}`);}
+   if(k.coins<u.coins){sfx.bad();return toast('Not enough coins yet!');}
+   k.coins-=u.coins;k.own[u.id]=today();sfx.coin();toast(`${unlockName(u)} unlocked!`);
+  }else sfx.tap();
+  if(u.kind==='hat')k.hat=u.id;else if(u.kind==='pet')k.pet=u.id;else if(u.kind==='hero')k.hero=u.key;
+  save(k);render();achToast(k);
+ },
+ takeOff:el=>{const k=kid();k[el.dataset.k]=null;save(k);sfx.tap();render();},
  buySword:()=>{const k=kid();if(k.coins<SWORD_COST){sfx.bad();return toast('Not enough coins yet!');}k.coins-=SWORD_COST;k.swords++;save(k);sfx.coin();render();},
  song:el=>{
   const k=kid(),i=+el.dataset.i;
