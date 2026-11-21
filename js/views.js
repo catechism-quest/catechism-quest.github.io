@@ -52,15 +52,20 @@ function parseQA(t,use){
 const serializeQA=qas=>qas.map((x,i)=>(i+1)+'. '+x.q+'\n'+x.a).join('\n\n');
 
 // ================= VIEWS =================
+let LASTV=null;const REDUCED=(()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){return false;}})();
 let V={name:'title'},G={},CR={hero:null,name:'',editId:null},DEL=null,started=false,MK={id:null,title:'',text:'',ans:'child',back:'quests'};
 function nav(v){V=v;V.scroll=true;DEL=null;closeModal();render();window.scrollTo(0,0);}
 function render(){
  const k=kid();
- if(['map','flock','shop','music','quests','herd','badges'].includes(V.name)&&!(k&&k.hero))V={name:S.kids.length?'players':'title'};
- else if(['map','flock','shop','music','herd','badges'].includes(V.name)&&!QD())V={name:'quests'};
- const f={title:titleV,players:playersV,create:createV,quests:questsV,map:mapV,study:studyV,fill:fillV,bonus:bonusV,herd:herdV,build:buildV,guard:guardV,flock:flockV,shop:shopV,music:musicV,settings:settingsV,maker:makerV,badges:badgesV}[V.name]||titleV;
+ if(NEED[V.name]&&!(k&&k.hero))V={name:S.kids.length?'players':'title'};
+ else if(NEED[V.name]==='quest'&&!QD())V={name:'quests'};
+ const f=Object.assign({title:titleV,players:playersV,create:createV,quests:questsV,map:mapV,study:studyV,fill:fillV,bonus:bonusV,herd:herdV,build:buildV,guard:guardV,flock:flockV,shop:shopV,music:musicV,settings:settingsV,maker:makerV,badges:badgesV},VIEWS)[V.name]||titleV;
+ if(LASTV&&LASTV!==V.name&&UNMOUNT[LASTV])UNMOUNT[LASTV]();
+ const fresh=LASTV!==V.name;LASTV=V.name;
  app.innerHTML=f();
- $('#nav').innerHTML=['map','flock','shop','music'].includes(V.name)?navBar():'';
+ if(fresh&&!REDUCED){app.classList.remove('vin');void app.offsetWidth;app.classList.add('vin');}
+ if(MOUNT[V.name])MOUNT[V.name]();
+ $('#nav').innerHTML=NAVTABS.includes(V.name)?navBar():'';
  document.body.classList.toggle('hasnav',!!$('#nav').innerHTML);
  // center the current level only when arriving at the map, not on every re-render
  if(V.name==='map'&&V.scroll){V.scroll=false;requestAnimationFrame(()=>{const c=document.querySelector('.node.cur');if(c)c.scrollIntoView({block:'center'});pickScene();});}

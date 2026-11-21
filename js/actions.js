@@ -126,6 +126,7 @@ const A={
   DEL=null;save(k);render();toast('Progress reset');
  }
 };
+Object.assign(A,ACT);
 document.addEventListener('click',e=>{
  const el=e.target.closest('[data-act]');
  if(!el||el.disabled){if(V.name==='title'){A.start();afterGesture();}return;}

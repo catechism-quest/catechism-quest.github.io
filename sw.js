@@ -1,5 +1,5 @@
 // Offline support for the installed app. Bump VERSION whenever any app file changes.
-const VERSION = 'cq-v10';
+const VERSION = 'cq-v11';
 const SHELL = ['./', 'index.html', 'catechisms.js', 'manifest.webmanifest', 'css/style.css',
   'js/sprites.js', 'js/songs.js', 'js/helpers.js', 'js/scenes.js', 'js/state.js', 'js/sound.js', 'js/rewards.js', 'js/views.js', 'js/games.js', 'js/actions.js',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png', 'icons/apple-touch-icon.png'];
@@ -29,7 +29,8 @@ self.addEventListener('fetch', e => {
   }
   if (url.origin !== location.origin) return;
   // App files: fresh copy when online (so updates show up right away), saved copy when offline.
-  e.respondWith(fetch(req).then(r => {
+  // no-cache: always check with the server, so a deploy never mixes old and new files.
+  e.respondWith(fetch(req, { cache: 'no-cache' }).then(r => {
     if (r.ok) { const copy = r.clone(); caches.open(VERSION).then(c => c.put(req, copy)); }
     return r;
   }).catch(() => caches.match(req, { ignoreSearch: true })

@@ -1,6 +1,13 @@
 // Catechism Quest: small helpers and sprite drawing.
 // Loaded as a classic script by index.html; files share top-level names and must load in the order listed there.
 'use strict';
+// Extension points: later files add screens and taps here instead of editing views.js/actions.js.
+// VIEWS[name]() returns a screen's HTML; MOUNT[name]() runs after it's on the page, UNMOUNT[name]() when leaving it;
+// ACT[name](el,e) handles taps on data-act="name" (merged into A in actions.js).
+const VIEWS={},MOUNT={},UNMOUNT={},ACT={};
+// NEED[name] = 'hero' (needs a kid with a hero) or 'quest' (also needs a chosen quest); NAVTABS lists screens that show the bottom bar.
+const NEED={map:'quest',flock:'quest',shop:'quest',music:'quest',herd:'quest',badges:'quest',quests:'hero'};
+const NAVTABS=['map','flock','shop','music'];
 // ================= HELPERS =================
 const SONG_COST=25,SWORD_COST=30;
 const STOP=new Set(['the','and','but','for','with','that','this','are','was','his','her','its','our','who','not','all','has','have','from','into','him','them','they','you','your']);

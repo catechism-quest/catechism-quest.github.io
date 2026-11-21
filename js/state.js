@@ -13,7 +13,8 @@ function syncCustom(){
  S.custom.forEach(c=>{CAT[c.id]={id:c.id,title:c.title,short:c.title.length>18?c.title.slice(0,17)+'…':c.title,custom:true,qas:c.qas,lands:landsFor(c.qas.length)};});
  QUEST_KEYS=['wsc','hc'].filter(x=>CAT[x]).concat(S.custom.map(c=>c.id));
 }
-const KEY='catechism-quest-app-v1';
+// The test page (tests/index.html) sets CQ_TEST so it never touches real saved data.
+const KEY=window.CQ_TEST?'catechism-quest-test':'catechism-quest-app-v1';
 function newKid(name,hero){return{id:uid(),name:name||'Hero',hero:hero||null,quest:null,open:{},colors:{},owned:{},prog:{},cps:{},srs:{},mast:{},guard:{},ach:{},stats:{found:0},streak:{n:0,best:0,last:0},coins:0,swords:1,songs:[0],song:0,made:Date.now(),at:Date.now()};}
 const clone=x=>JSON.parse(JSON.stringify(x));
 function load(){try{const s=localStorage.getItem(KEY);if(s)return JSON.parse(s);}catch(e){}return null;}
