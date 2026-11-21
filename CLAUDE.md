@@ -4,8 +4,21 @@ A pixel-art web app that helps kids memorize the Westminster Shorter Catechism a
 
 ## Files
 
-- `index.html`: the whole app (CSS, sprites, hymn melodies, game logic, views), in one file with no build step and no dependencies apart from Google Fonts.
-- `catechisms.js`: catechism texts and the default land splits. **Generated** by `tools/build_data.py`, which is not in this repo, so don't edit it by hand. Change land places and banners in `index.html` instead (see `SCENES` and `SCENE_META`).
+- `index.html`: the page shell. It loads `css/style.css`, then the app's scripts in order. There's no build step and no dependencies apart from Google Fonts.
+- `css/style.css`: all the styles.
+- `js/`: the app, as plain scripts (not modules) that share top-level names. **Load order matters**, so a file may only use names from earlier files while it loads (functions can call anything at run time). The order is:
+  - `sprites.js`: palette, sprites, icons and heroes.
+  - `songs.js`: the jukebox melodies (`SONGS`).
+  - `helpers.js`: small helpers and sprite drawing.
+  - `scenes.js`: the painted land backgrounds (`SCENES`, `SCENE_META`).
+  - `state.js`: saved state, progress, spaced repetition and cloud sync.
+  - `sound.js`: sound effects, the hymn player, speech and confetti.
+  - `views.js`: the map, menus, flock, shop, jukebox and settings.
+  - `games.js`: study, fill-in, bonus castle, Word Builder, guardians and lost-lamb review.
+  - `actions.js`: taps and input, then start-up and the `__CQ` test hook.
+
+  A new file must be added to `index.html` in the right place and to `SHELL` in `sw.js`. Don't give a top-level name the same name as a browser global (like `top`, `name` or `status`).
+- `catechisms.js`: catechism texts and the default land splits. **Generated** by `tools/build_data.py`, which is not in this repo, so don't edit it by hand. Change land places and banners in `js/scenes.js` instead (see `SCENES` and `SCENE_META`).
 - `sw.js`: the service worker for offline use when installed. **Bump `VERSION` on every change to any app file**, or installed apps keep the old copy.
 - `manifest.webmanifest` and `icons/`: the install-to-home-screen metadata.
 - `tools/musicxml_to_notes.py`: converts a hymn's MusicXML score into a jukebox melody. See the `add-hymn` skill.
