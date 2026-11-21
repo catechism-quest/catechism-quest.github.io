@@ -36,3 +36,25 @@ test('at least 28 achievements so far',()=>ok(ACH.length>=28,String(ACH.length))
 // ---------- adventure world map ----------
 test('every land belongs to exactly one place',()=>{['wsc','hc'].forEach(id=>{const q=CAT[id],seen=[];SCENES.forEach((s,p)=>placeLands(q,p).forEach(l=>seen.push(l)));eq(seen.sort((a,b)=>a-b),q.lands.map((l,i)=>i),id);});});
 test('world map renders and locks unreached places',()=>{const k=testKid({prog:{'wsc:1':3}});S.kids.push(k);fix();S.kidId=k.id;V={name:'journey'};render();ok(document.querySelectorAll('.jn').length===27);ok(document.querySelectorAll('.jn.lock').length>=25);ok(placeReached(k,CAT.wsc,0));ok(!placeReached(k,CAT.wsc,5));S.kids=S.kids.filter(x=>x!==k);S.kidId=null;V={name:'title'};render();});
+
+// ---------- World Builder ----------
+test('100+ placeable objects in every category',()=>{const vis=OBJECTS.filter(o=>o.cat);ok(vis.length>=100,'only '+vis.length);CATS.forEach(c=>ok(vis.some(o=>o.cat===c[0]),c[0]));});
+test('object ids are unique',()=>{const ids=OBJECTS.map(o=>o.id);eq(new Set(ids).size,ids.length);});
+test('every object renders in all 4 turns',()=>{OBJECTS.forEach(o=>{for(let r=0;r<4;r++){const s=objSprite(o,r,o.iconState||{m:5});ok(s.c.width>0&&s.c.height>0,o.id);}});});
+test('every object has a catalog icon',()=>{OBJECTS.filter(o=>o.cat).forEach(o=>ok(/^data:image/.test(objIcon(o)),o.id));});
+test('10 themes and every theme item exists',()=>{eq(THEMES.length,10);THEMES.forEach(t=>{ok(OBJ[t.icon],t.id+' icon');t.feat.forEach(f=>ok(OBJ[f],t.id+' '+f));t.pets.forEach(p=>ok(CRE[p],t.id+' '+p));ok(TERRAIN[t.ground]);});});
+test('every creature sprite exists',()=>{CREATURES.forEach(c=>ok(SPR[c.spr],c.id));ok(CREATURES.length>=20);});
+test('a new world has terrain, scenery and friends',()=>{THEMES.forEach(t=>{const w=newWorld(t.id);eq(w.t.length,w.N*w.N);ok(w.o.length>=2,t.id+' objects '+w.o.length);ok(w.c.length>=1,t.id+' creatures');});});
+test('placement rules: inside, not on water, no overlap',()=>{const w=newWorld('village');w.o=[];w.t='g'.repeat(w.N*w.N);w.ov='.'.repeat(w.N*w.N);ok(canPlace(w,OBJ.castle,2,2,0));placeObj(w,'castle',2,2,0);ok(!canPlace(w,OBJ.cottage,3,3,0));ok(canPlace(w,OBJ.cottage,4,2,0));ok(!canPlace(w,OBJ.castle,w.N-1,0,0));setT(w,8,8,'a');ok(!canPlace(w,OBJ.cottage,8,8,0));ok(canPlace(w,OBJ.rowboat,8,8,0));ok(!canPlace(w,OBJ.rowboat,9,9,0));});
+test('rotation swaps the footprint',()=>{eq(footprint(OBJ.school,0),[2,1]);eq(footprint(OBJ.school,1),[1,2]);});
+test('fences join to their neighbors',()=>{const w=newWorld('farm');w.o=[];const a=placeObj(w,'fence',3,3,0),b=placeObj(w,'fence',4,3,0),c=placeObj(w,'fence',3,4,0);eq(connMask(w,a),2|4);eq(connMask(w,b),8);eq(connMask(w,c),1);});
+test('undo and redo restore the world',()=>{const w=newWorld('village'),h=History(w),n=w.o.length;h.push();placeObj(w,'oak',0,0,0);eq(w.o.length,n+1);ok(h.undo());eq(w.o.length,n);ok(h.redo());eq(w.o.length,n+1);});
+test('expanding keeps things in place',()=>{const w=newWorld('village'),o=w.o[0],x=o.x,N=w.N;ok(expandWorld(w));eq(w.N,N+4);eq(o.x,x+2);eq(w.t.length,w.N*w.N);});
+test('migrateWorld repairs damaged saves',()=>{const w=migrateWorld({N:14,t:'gg',o:[{t:'nope',x:1,y:1},{t:'oak',x:1,y:1}],c:[{t:'dog',x:2,y:2}],theme:'zzz'});eq(w.t.length,14*14);eq(w.o.length,1);eq(w.theme,'village');ok(w.o[0].u&&w.c[0].u);});
+test('pathfinding goes around buildings',()=>{const w=newWorld('village');w.o=[];w.t='g'.repeat(w.N*w.N);for(let y=0;y<6;y++)placeObj(w,'cottage',5,y,0);const p=findPath(w,'villager',2,2,8,2,blockedSet(w));ok(p&&p.length>6,'path '+(p&&p.length));ok(!p.some(([x,y])=>x===5&&y<6),'walked through');});
+test('water creatures stay in water',()=>{const w=newWorld('village');w.t='g'.repeat(w.N*w.N);ok(!canStand(w,'fish',3,3));setT(w,3,3,'a');ok(canStand(w,'fish',3,3));ok(!canStand(w,'dog',3,3));ok(canStand(w,'duck',3,3));});
+test('cars and trains appear on roads and rails',()=>{const w=newWorld('village');w.ov='.'.repeat(w.N*w.N);for(let x=1;x<9;x++){setOv(w,x,1,'r');setOv(w,x,3,'l');}const v=makeVehicles(w);ok(v.some(x=>x.kind==='car'));ok(v.some(x=>x.kind==='train'));});
+test('challenges check worlds',()=>{const w=newWorld('village');w.o=[];w.c=[];CHALLENGES.forEach(c=>{const [h,n]=c.check(w);ok(n>0&&h<n,c.id);});for(let i=0;i<6;i++)placeObj(w,'lamp',i,0,0);const L=CHALLENGES.find(c=>c.id==='lights').check(w);eq(L[0],L[1]);});
+test('treasures need earning unless Creative Mode',()=>{const k=testKid();ok(!wbHas(k,OBJ.trophy));k.creative=true;ok(wbHas(k,OBJ.trophy));k.creative=false;k.xp=xpAt(5);grantUnlocks(k);ok(wbHas(k,OBJ.trophy));ok(wbHas(k,OBJ.oak));});
+test('at least 30 achievements',()=>ok(ACH.length>=30,String(ACH.length)));
+test('worlds list and editor open and close',()=>{const k=testKid();k.worlds=[newWorld('candy')];S.kids.push(k);fix();S.kidId=k.id;V={name:'worlds'};render();ok(document.querySelectorAll('.wcard').length===1);V={name:'wb',wid:k.worlds[0].id};render();ok(WBS&&WBS.w===k.worlds[0],'engine started');ok($('#wbui').innerHTML.includes('wbbar'));V={name:'title'};render();ok(!WBS,'engine stopped');S.kids=S.kids.filter(x=>x!==k);S.kidId=null;});

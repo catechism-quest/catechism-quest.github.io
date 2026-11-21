@@ -150,6 +150,7 @@ document.addEventListener('change',e=>{
  if(t.matches('.kin')){const k=S.kids.find(x=>x.id===t.dataset.kid);if(k){k.name=t.value.trim()||k.name;save(k);}}
  if(t.id==='snd'){S.sound=t.checked;persist();}
  if(t.id==='mus'){S.music=t.checked;persist();syncMusic();}
+ if(t.id==='creative'){const k=kid();if(k){k.creative=t.checked;save(k);}}
  if(t.id==='openAll'){const k=kid();if(k){k.open[k.quest]=t.checked;save(k);}}
  if(t.name==='mkAns'){MK.ans=t.value;const c=$('#mkCount');if(c)c.textContent=mkCountText();}
 });

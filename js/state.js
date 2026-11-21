@@ -15,7 +15,7 @@ function syncCustom(){
 }
 // The test page (tests/index.html) sets CQ_TEST so it never touches real saved data.
 const KEY=window.CQ_TEST?'catechism-quest-test':'catechism-quest-app-v1';
-function newKid(name,hero){return{id:uid(),name:name||'Hero',hero:hero||null,quest:null,open:{},colors:{},owned:{},prog:{},cps:{},srs:{},mast:{},guard:{},ach:{},stats:{found:0},streak:{n:0,best:0,last:0},xp:0,own:{},hat:null,pet:null,visited:{},coins:0,swords:1,songs:[0],song:0,made:Date.now(),at:Date.now()};}
+function newKid(name,hero){return{id:uid(),name:name||'Hero',hero:hero||null,quest:null,open:{},colors:{},owned:{},prog:{},cps:{},srs:{},mast:{},guard:{},ach:{},stats:{found:0},streak:{n:0,best:0,last:0},xp:0,own:{},hat:null,pet:null,visited:{},worlds:[],wbch:{},creative:false,coins:0,swords:1,songs:[0],song:0,made:Date.now(),at:Date.now()};}
 const clone=x=>JSON.parse(JSON.stringify(x));
 function load(){try{const s=localStorage.getItem(KEY);if(s)return JSON.parse(s);}catch(e){}return null;}
 let S=load()||{v:1,kids:[],kidId:null,sound:true,music:true,dels:[],custom:[]};
@@ -34,12 +34,15 @@ function fix(){
   if(k.hero&&!HEROES[k.hero])k.hero='knight';
   // a quest someone made on another device isn't here; keep the pointer, the app asks for a quest
   if(k.quest&&!CAT[k.quest]&&!/^my_/.test(k.quest))k.quest=null;
-  ['colors','owned','prog','cps','open','srs','mast','guard','ach','stats','streak','own','visited'].forEach(f=>{if(!k[f]||typeof k[f]!=='object'||Array.isArray(k[f]))k[f]={};});
+  ['colors','owned','prog','cps','open','srs','mast','guard','ach','stats','streak','own','visited','wbch'].forEach(f=>{if(!k[f]||typeof k[f]!=='object'||Array.isArray(k[f]))k[f]={};});
   // daily streak and lost-lamb count (added with achievements)
   ['n','best','last'].forEach(f=>{if(typeof k.streak[f]!=='number')k.streak[f]=0;});if(typeof k.stats.found!=='number')k.stats.found=0;
   // XP (added with levels): kids from before get a fair estimate from their progress (progress.js fills it in on load)
   if(typeof k.xp!=='number'||k.xp<0)k.xp=typeof xpEstimate==='function'?xpEstimate(k):-1;
   if(typeof owns==='function'){if(k.hat&&!owns(k,k.hat))k.hat=null;if(k.pet&&!owns(k,k.pet))k.pet=null;}
+  // World Builder worlds (wb/world.js upgrades each one; it may load after this runs)
+  if(!Array.isArray(k.worlds))k.worlds=[];if(typeof migrateWorld==='function')k.worlds=k.worlds.map(migrateWorld).filter(Boolean);
+  if(typeof k.creative!=='boolean')k.creative=false;
   if(k.hero&&!HERO_KEYS.includes(k.hero)&&typeof heroOwned==='function'&&!heroOwned(k,k.hero))k.hero='knight';
   if(typeof k.coins!=='number')k.coins=0;if(typeof k.swords!=='number')k.swords=1;
   if(!Array.isArray(k.songs))k.songs=[0];if(!k.songs.includes(0))k.songs.unshift(0);

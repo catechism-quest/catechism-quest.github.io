@@ -72,7 +72,7 @@ function render(){
  pickScene();
 }
 function navBar(){
- const it=[['map','MAP',spr('flag',4)],['flock','FLOCK',spr('sheep',3)],['shop','SHOP',spr('coin',4)],['music','MUSIC',spr('note',3,{k:'#ffffff',m:'#ffd23f'})]];
+ const it=[['map','MAP',spr('flag',4)],['flock','FLOCK',spr('sheep',3)],['worlds','BUILD',spr('tree',3)],['shop','SHOP',spr('coin',4)],['music','MUSIC',spr('note',3,{k:'#ffffff',m:'#ffd23f'})]];
  const lost=lostIdx(kid()).length;
  return`<div class="nav">${it.map(x=>`<button class="${V.name===x[0]?'on':''}" data-act="go" data-to="${x[0]}">${x[2]}${x[1]}${x[0]==='flock'&&lost?`<span class="badge" aria-label="${lost} lost">${lost}</span>`:''}</button>`).join('')}</div>`;
 }
@@ -222,6 +222,8 @@ function settingsV(){
  ${k&&q?`<section class="box"><div class="lbl">${esc(k.name.toUpperCase())} · ${esc(q.short.toUpperCase())}</div>
  <label class="tog"><input type="checkbox" id="openAll" ${isOpen(k)?'checked':''}> Let ${esc(k.name)} play any level (skip ahead)</label>
  <p class="tiny" style="margin-top:-4px">Handy if your family or church is already partway through the catechism.</p>
+ <label class="tog"><input type="checkbox" id="creative" ${k.creative?'checked':''}> Creative Mode in the World Builder (unlocks every treasure)</label>
+ <p class="tiny" style="margin-top:-4px">Everything else in the builder is always free. Treasures are normally earned by learning.</p>
  <button class="btn sm bad" data-act="resetProg">${DEL==='reset'?'TAP AGAIN TO RESET':'RESET '+esc(k.name.toUpperCase())+'’S '+esc(q.short.toUpperCase())+' PROGRESS'}</button></section>`:''}
  <section class="box"><div class="lbl">MY QUESTS</div>
  ${S.custom.map(c=>`<div class="krow"><span style="flex:1;font-size:18px;overflow-wrap:anywhere">${esc(c.title)} <span class="tiny">(${c.qas.length})</span></span><button class="btn sm" data-act="mkEdit" data-id="${c.id}">EDIT</button><button class="btn sm bad" data-act="mkDel" data-id="${c.id}">${DEL==='q:'+c.id?'SURE?':'DELETE'}</button></div>`).join('')}
