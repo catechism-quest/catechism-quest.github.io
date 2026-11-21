@@ -5,7 +5,7 @@ A pixel-art web app that helps kids memorize the Westminster Shorter Catechism a
 ## Files
 
 - `index.html`: the whole app (CSS, sprites, hymn melodies, game logic, views), in one file with no build step and no dependencies apart from Google Fonts.
-- `catechisms.js`: catechism texts and the default land splits. **Generated** by `tools/build_data.py`, which is not in this repo, so don't edit it by hand. Change land names and themes in `index.html` instead (see `STORY`).
+- `catechisms.js`: catechism texts and the default land splits. **Generated** by `tools/build_data.py`, which is not in this repo, so don't edit it by hand. Change land places and banners in `index.html` instead (see `SCENES` and `SCENE_META`).
 - `sw.js`: the service worker for offline use when installed. **Bump `VERSION` on every change to any app file**, or installed apps keep the old copy.
 - `manifest.webmanifest` and `icons/`: the install-to-home-screen metadata.
 - `tools/musicxml_to_notes.py`: converts a hymn's MusicXML score into a jukebox melody. See the `add-hymn` skill.
@@ -28,7 +28,8 @@ A pixel-art web app that helps kids memorize the Westminster Shorter Catechism a
 ## How things work
 
 - **Sprites.** `SPR` holds pixel art as arrays of strings, with one character per pixel and `.` for transparent. The letters map to `PAL` colors. Every row of a sprite must be the same length. A color map can recolor a sprite, as in `spr(name, scale, {k:'#fff'})`; `ic()` makes small inline icons. Keep everything 8-bit: no emoji or font symbols for icons.
-- **Lands.** `STORY` is the 27-stop journey from the Garden of Eden to the New Heaven & Earth. `storyFor(s, total)` spreads any quest's lands across it. Westminster has 27 lands, one per stop; Heidelberg has 52 Lord's Days.
+- **Lands.** `SCENES` is the 27-place journey from the Garden of Eden to the New Jerusalem. Each has a painted background drawn on a tiny canvas, and `SCENE_META` gives its banner reference, emblem and color. `sceneOf(q, s)` maps any quest's lands onto it, and `themeOf(q, s)` gives a land's banner. Westminster has 27 lands, one per place; Heidelberg has 52 Lord's Days.
+- **Word Builder and guardians.** `k.mast["wsc:12"]` crowns a question built in Word Builder (`startBuild`). `k.guard["wsc:L3"]` is a land's guardian badge (`startGuard`), which also unlocks the next locked hymn the first time.
 - **Flock / spaced repetition.** `k.srs["wsc:12"] = {b, d}` holds a step index into `GAPS` (1, 3, 7, 14, 30… days) and a due day. A due lamb is "lost" and appears gray in the hills. The "Find your lost lambs" review (`startHerd` / `herdV`) brings it home. A right answer moves the next review further out. A miss gets one more try; right then, the lamb comes home and its gap starts over. `fix()` migrates older saved data.
 - **Music.** `SONGS` entries are melodies in `NOTE+OCTAVE:beats` form. Kids' unlocked songs are saved as **positions** in `SONGS`, so only ever append new songs. Unlocked songs play on shuffle (`nextSong`).
 - **Saving.** Everything lives in localStorage. Inside Claude, a `db` capability also syncs each kid as their own document. Keep new kid fields JSON-serializable, and give them defaults in `fix()`.
