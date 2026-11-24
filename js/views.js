@@ -72,7 +72,7 @@ function render(){
  pickScene();
 }
 function navBar(){
- const it=[['map','MAP',spr('flag',4)],['flock','FLOCK',spr('sheep',3)],['worlds','BUILD',spr('tree',3)],['shop','SHOP',spr('coin',4)],['music','MUSIC',spr('note',3,{k:'#ffffff',m:'#ffd23f'})]];
+ const it=[['map','MAP',spr('mapflag',4)],['flock','FLOCK',spr('sheep',3)],['worlds','BUILD',spr('tree',3)],['shop','SHOP',spr('coin',4)],['music','MUSIC',spr('note',3,{k:'#ffffff',m:'#ffd23f'})]];
  const lost=lostIdx(kid()).length;
  return`<div class="nav">${it.map(x=>`<button class="${V.name===x[0]?'on':''}" data-act="go" data-to="${x[0]}">${x[2]}${x[1]}${x[0]==='flock'&&lost?`<span class="badge" aria-label="${lost} lost">${lost}</span>`:''}</button>`).join('')}</div>`;
 }

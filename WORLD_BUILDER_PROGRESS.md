@@ -7,7 +7,7 @@ The World Builder is an isometric creative sandbox inside Catechism Quest. Each 
 |---|---|
 | Isometric terrain: 6 ground types, water banks, toy-diorama edges | ✅ Done |
 | Roads, paths and railroads that join up by themselves; bridges over water | ✅ Done |
-| Catalog: **140 objects** in 6 categories (35 homes, 38 nature, 21 fun, 20 town, 20 magic, 6 treasures) | ✅ Done |
+| Catalog: **142 objects** in 6 categories (35 homes, 38 nature, 21 fun, 22 town, 20 magic, 6 treasures) | ✅ Done |
 | **23 creatures**: villagers (customizable), pets, farm animals, wildlife, dinosaurs, dragons, a space buddy | ✅ Done |
 | Behaviors: villagers visit buildings, play, chat, stroll on paths and sleep at home; animals wander and sleep; fish swim; fliers fly | ✅ Done |
 | Vehicles: cars on roads, a steam train on each stretch of track | ✅ Done |
@@ -35,7 +35,7 @@ All plain classic scripts in `js/wb/`, loaded in this order, with no build step:
 | `ui.js` | Screens (`VIEWS.worlds`, `VIEWS.wb`), the toolbar, drawers and selection panel, `CHALLENGES`, builder achievements, and photo mode. |
 
 ### Key decisions
-- **Canvas 2D with procedural pixel art.** The app is a no-dependency static site, and its look is 8-bit sprites. Building objects from simple 3D parts gives consistent, original art for 140 objects in all 4 rotations without hand-drawing 560 sprites. Hard alpha edges keep the 8-bit look when scaled.
+- **Canvas 2D with procedural pixel art.** The app is a no-dependency static site, and its look is 8-bit sprites. Building objects from simple 3D parts gives consistent, original art for 142 objects in all 4 rotations without hand-drawing 568 sprites. Hard alpha edges keep the 8-bit look when scaled.
 - **Performance:** terrain (and roads) is baked once per edit into a single image, and object sprites are cached per object, rotation and state, so a frame is one terrain draw plus one `drawImage` per visible thing. Only "live" parts (wheels, blades, water, smoke) are drawn every frame. The loop pauses when the tab is hidden and stops when you leave the builder.
 - **Saving:** worlds live in `k.worlds`, so they ride on the existing localStorage save and the Claude `db` sync and backup per kid. The format is compact: terrain and overlays are strings of N×N letters. Edits save after 0.7 s; creature positions save every 20 s. `migrateWorld()` repairs or upgrades any saved world on load, so data survives app updates.
 - **Undo** uses whole-world snapshots, which is simple and reliable at this size. Every destructive action (erase, remove, expand, move) can be undone.
