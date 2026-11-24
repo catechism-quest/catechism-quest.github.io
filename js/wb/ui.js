@@ -7,7 +7,8 @@ Object.assign(SPR,{
  hand:["..k.k...",".kwkwk..",".kwkwkk.","kkwwwwwk","kwwwwwwk","kwwwwwk.",".kwwwwk.","..kkkk.."],
  brush:["......kk",".....kyk","....kyk.","...kyk..","..knk...",".kmmk...","kmmk....","kk......"],
  eraser:["...kkkk.","..kppppk",".kppppk.","kwwwpk..","kwwwk...",".kkk....","........","kkkkkkkk"],
- move:["...k...","..kkk..","k..k..k","kkkkkkk","k..k..k","..kkk..","...k..."],
+ move:["....k....","...kkk...","....k....",".k..k..k.","kkkkkkkkk",".k..k..k.","....k....","...kkk...","....k...."],
+ movebig:["......k......",".....kkk.....","....kkkkk....","......k......","..k...k...k..",".kk...k...kk.","kkkkkkkkkkkkk",".kk...k...kk.","..k...k...k..","......k......","....kkkkk....",".....kkk.....","......k......"],
  undo:["..k.....",".kk.....","kkkkkk..",".kk...k.","..k....k",".......k","......k.","..kkkk.."],
  rotate:["..kkk.k",".k...kk","k...kkk","k......","k......",".k...k.","..kkk.."],
  camera:["..kkk....","kkkkkkkkk","kaaakkkak","kaakwkaak","kaakkkaak","kaaaaaaak","kkkkkkkkk"],
@@ -111,8 +112,8 @@ Object.assign(ACT,{
 VIEWS.wb=()=>`<div class="wbwrap"><canvas id="wbc" aria-label="Your world. Drag to look around, pinch to zoom."></canvas><div id="wbui"></div></div>`;NEED.wb='hero';
 MOUNT.wb=()=>{const k=kid(),w=findWorld(V.wid);if(!w)return nav({name:'worlds'});document.body.classList.add('inwb');const S=wbStart(k,w,$('#wbc'));S.ui={drawer:null,cat:'build',ccat:'people',more:false};wbUI();};
 UNMOUNT.wb=()=>{wbStop();document.body.classList.remove('inwb');};
-const TOOLS=[['play','PLAY','hand'],['build','BUILD','cottage'],['friends','FRIENDS','person'],['paint','PAINT','brush'],['road','ROADS','roadi'],['erase','ERASE','eraser'],['select','MOVE','move']];
-function toolIcon(t){return t[2]==='cottage'?wbIcon('cottage',3):t[2]==='person'?creIcon('villager',3):spr(t[2],4);}
+const TOOLS=[['play','PLAY','hand'],['build','BUILD','cottage'],['friends','FRIENDS','person'],['paint','PAINT','brush'],['road','ROADS','roadi'],['erase','ERASE','eraser'],['select','MOVE','movebig']];
+function toolIcon(t){return t[2]==='cottage'?wbIcon('cottage',3):t[2]==='person'?creIcon('villager',3):t[2]==='movebig'?spr('movebig',3,{k:'#ffffff'}):spr(t[2],4);}
 function wbUI(){
  const S=WBS,el=$('#wbui');if(!S||!el)return;const w=S.w,ui=S.ui;
  if(S.photo){el.innerHTML=`<div class="wbphoto"><button class="wbround" data-act="wbShot" aria-label="Save photo">${spr('camera',4)}</button><button class="btn sm" data-act="wbPhoto">DONE</button></div>`;return;}

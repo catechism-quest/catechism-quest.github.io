@@ -33,7 +33,7 @@ This checklist tracks the adventure and progression system and the World Builder
 ## Phase 3: World Builder engine (details in WORLD_BUILDER_PROGRESS.md)
 - [x] Isometric renderer, terrain baking, camera (pan, pinch, wheel, buttons), depth sorting.
 - [x] Part-based procedural object art with rotation, state and live animated parts.
-- [x] Catalog: 140 objects in 6 categories, with large picture icons.
+- [x] Catalog: 142 objects in 6 categories, with large picture icons.
 - [x] Tools: play, build, friends, paint (3 brushes), roads/paths/rails (auto-joining, bridges), eraser, move/turn/copy/remove, undo/redo.
 
 ## Phase 4: Creatures and behaviors
