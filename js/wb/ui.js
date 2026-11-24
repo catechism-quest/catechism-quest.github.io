@@ -119,7 +119,7 @@ function wbUI(){
  if(S.photo){el.innerHTML=`<div class="wbphoto"><button class="wbround" data-act="wbShot" aria-label="Save photo">${spr('camera',4)}</button><button class="btn sm" data-act="wbPhoto">DONE</button></div>`;return;}
  const top=`<div class="wbtop"><button class="wbb" data-act="wbBack" aria-label="Back to worlds">${ic('back',3)}</button><button class="wbname" data-act="wbRename"><span>${esc(w.name)}</span>${spr('pencil',2)}</button>
   <button class="wbb" data-act="wbUndo" ${S.hist.u.length?'':'disabled'} aria-label="Undo">${spr('undo',3)}</button><button class="wbb" data-act="wbRedo" ${S.hist.r.length?'':'disabled'} aria-label="Redo">${spr('redo',3)}</button>
-  <button class="wbb ${ui.drawer==='ch'?'on':''}" data-act="wbCh" aria-label="Challenges">${spr('star',2)}</button><button class="wbb ${ui.more?'on':''}" data-act="wbMore" aria-label="More">${ic('gear',3)}</button></div>
+  <button class="wbb ${ui.drawer==='ch'?'on':''}" data-act="wbCh" aria-label="Challenges">${spr('star',2)}</button><button class="wbb ${ui.more?'on':''}" data-act="wbMore" aria-label="More">${ic('gear',2)}</button></div>
   <div class="wbzoom"><button class="wbb" data-act="wbZoom" data-z="1" aria-label="Zoom in">${spr('plus',3)}</button><button class="wbb" data-act="wbZoom" data-z="-1" aria-label="Zoom out">${spr('minus',3)}</button></div>`;
  const bar=`<div class="wbbar">${TOOLS.map(t=>`<button class="wbt ${S.tool===t[0]?'on':''}" data-act="wbTool" data-t="${t[0]}">${toolIcon(t)}<span>${t[1]}</span></button>`).join('')}</div>`;
  el.innerHTML=top+(ui.more?moreHTML(S):'')+drawerHTML(S)+bar;

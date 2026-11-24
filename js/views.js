@@ -79,7 +79,7 @@ function navBar(){
 function hud(){
  const k=kid(),q=QD(),li=levelInfo(k.xp);
  return`<div class="hud"><button class="who" data-act="players">${heroImg(k,2)}<span class="whon"><span>${esc(k.name)}</span><span class="lvl"><b>LV ${li.L}</b><i><u style="width:${li.pct}%"></u></i></span></span></button>${streakBtn(k)}
- <button class="ib ${S.music?'':'off'}" data-act="toggleMusic" aria-label="Music">${ic('note',3)}</button><button class="ib" data-act="go" data-to="settings" aria-label="Settings">${ic('gear',3)}</button></div>
+ <button class="ib ${S.music?'':'off'}" data-act="toggleMusic" aria-label="Music">${ic('note',3)}</button><button class="ib" data-act="go" data-to="settings" aria-label="Settings">${ic('gear',2)}</button></div>
  <div class="hud2"><span class="chip">${spr('coin',2)}<b>${k.coins}</b><i>COINS</i></span><span class="chip">${spr('sheep',2)}<b>${sheepCount(k)}</b><i>LAMBS</i></span><span class="chip">${spr('sword',2)}<b>${k.swords}</b><i>SWORDS</i></span></div>
  <button class="qbar" data-act="go" data-to="quests" aria-label="Change quest"><span>${esc(q.short.toUpperCase())}</span><span class="sp"></span><span>${learnedIn(k,k.quest)}/${N()} ${ic('play',2,W)}</span></button>`;
 }
@@ -105,7 +105,7 @@ function installHTML(){
  return'';
 }
 function playersV(){
- return`<div class="top"><span style="width:46px"></span><div class="ttl">WHO'S PLAYING?</div><button class="ib" data-act="go" data-to="settings" aria-label="Settings">${ic('gear',3)}</button></div>
+ return`<div class="top"><span style="width:46px"></span><div class="ttl">WHO'S PLAYING?</div><button class="ib" data-act="go" data-to="settings" aria-label="Settings">${ic('gear',2)}</button></div>
  <div class="plist">${S.kids.map(k=>{const c=CAT[k.quest];return`<button class="pbtn" data-act="pickKid" data-id="${k.id}">${k.hero?heroImg(k,4):spr('knight',4,{a:'#c9c3d6',b:'#9a93b0',c:'#c9c3d6',r:'#c9c3d6',y:'#c9c3d6'})}<div><div class="pn">${esc(k.name)}</div><div class="pp">${!k.hero?'Tap to choose a hero':c?`${HEROES[k.hero].name} · ${esc(c.short)} ${learnedIn(k,k.quest)}/${c.qas.length}`:'Tap to pick a quest'}</div></div></button>`;}).join('')}</div>
  <button class="btn acc" style="width:100%" data-act="newHero">+ NEW HERO</button>`;
 }
